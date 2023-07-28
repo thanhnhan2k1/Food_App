@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">Food App</string>
+    <string name="home">Home</string>
+    <string name="saved">Saved</string>
+    <string name="profile">Profile</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="daly_recipe_for_you">Daly Recipe For You</string>
+    <string name="eggs_benedict">Eggs Benedict</string>
+    <string name="make_it_now">Make It Now!</string>
+    <string name="date">Monday - April 18, 2023</string>
+    <string name="recent_meals">Recent Meals</string>
+    <string name="description">This is a classic homemade pizza recipe, including a pizza dough recipe, topping suggestions, and step-by-step instructions with photos.</string>
+    <string name="time">45m</string>
+    <string name="see_all">see all</string>
+    <string name="owner">By Gordon Ramsay</string>
+    <string name="home_made_pizza">Home Made Pizza</string>
+    <string name="image_meal">Image Meal</string>
+    <string name="add_to_my_list">Add to my list</string>
+    <string name="_104">104</string>
+    <string name="meal_name">Eggs Benedict</string>
+    <string name="back_button">Back Button</string>
+    <string name="search_desc">Search</string>
+    <string name="ingredients">Ingredients</string>
+    <string name="white_wine_vinegar">White Wine Vinegar</string>
+    <string name="unit">3 tbsp</string>
+    <string name="for_the_hollandaise_sauce">For the hollandaise sauce</string>
+    <string name="how_to_make">How To Make</string>
+    <string name="image_button_like">Image Button Like</string>
+</resources>
