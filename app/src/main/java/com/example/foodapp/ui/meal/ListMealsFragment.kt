@@ -2,6 +2,7 @@ package com.example.foodapp.ui.meal
 
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -13,14 +14,18 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import com.example.foodapp.data.room.FoodDatabase
 import com.example.foodapp.R
 import com.example.foodapp.adapter.MealRecycleView
+import com.example.foodapp.data.retrofit.MealApi
+import com.example.foodapp.data.retrofit.RetrofitBuilder
 import com.example.foodapp.model.Meal
 import com.example.foodapp.data.room.MealRepository
 import com.example.foodapp.databinding.FragmentListMealsBinding
 import com.example.foodapp.databinding.MealItemBinding
 import com.example.foodapp.ui.*
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.squareup.picasso.Picasso
 import java.time.DayOfWeek
 import java.time.Month
@@ -28,6 +33,7 @@ import java.util.*
 
 class ListMealsFragment : Fragment() {
     private var isLike = false
+    private lateinit var shimmerFrameLayout: ShimmerFrameLayout
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -36,6 +42,7 @@ class ListMealsFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         val binding = FragmentListMealsBinding.inflate(inflater, container, false)
+        shimmerFrameLayout = binding.shimmerViewContainer
 
         val calender = Calendar.getInstance()
         //val time = LocalDate.now()
@@ -57,7 +64,9 @@ class ListMealsFragment : Fragment() {
         val adapter = MealRecycleView()
 
         binding.rvListRecentMeals.adapter = adapter
+
         viewModel.list10Meals.observe(viewLifecycleOwner) {
+            handleSuccessMeal(binding.rvListRecentMeals)
             if (it != null) {
                 adapter.setData(it)
 
@@ -102,7 +111,7 @@ class ListMealsFragment : Fragment() {
         return binding.root
     }
 
-    fun navigateToFragmentDetail(meal: Meal?) {
+    private fun navigateToFragmentDetail(meal: Meal?) {
         val action = meal?.let { it1 ->
             ListMealsFragmentDirections.actionFragmentHomeToFragmentDetail(
                 it1
@@ -129,6 +138,27 @@ class ListMealsFragment : Fragment() {
             }
             mealItemBinding.btnLike.setImageResource(R.drawable.like_full_icon)
         }
+
+    }
+
+    override fun onPause() {
+        super.onPause()
+        shimmerFrameLayout.stopShimmerAnimation()
+    }
+
+//    override fun onResume() {
+//        super.onResume()
+//        shimmerFrameLayout.startShimmerAnimation()
+//    }
+
+    private fun handleSuccessMeal(rv: RecyclerView) {
+        rv.visibility = View.INVISIBLE
+        shimmerFrameLayout.startShimmerAnimation()
+        Handler().postDelayed({
+            shimmerFrameLayout.stopShimmerAnimation()
+            shimmerFrameLayout.visibility = View.GONE
+            rv.visibility = View.VISIBLE
+        }, 3000)
 
     }
 }
