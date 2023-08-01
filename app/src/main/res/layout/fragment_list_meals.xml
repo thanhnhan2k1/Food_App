@@ -2,7 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.meal.ListMealsFragment">
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -12,6 +12,7 @@
             android:layout_marginTop="-100dp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/bg"
             android:src="@drawable/background"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"/>
@@ -39,12 +40,13 @@
             android:layout_marginTop="20dp"
             android:layout_marginHorizontal="10dp"
             android:layout_width="wrap_content"
+            android:contentDescription="@string/search_desc"
             android:layout_height="wrap_content"
             android:src="@drawable/baseline_search_24"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             android:id="@+id/imvSearch"/>
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableStart="@drawable/baseline_star_24"
@@ -57,20 +59,22 @@
             android:layout_marginTop="40dp"
             android:textColor="@color/black"
             android:textSize="20sp"/>
+
         <TextView
+            android:id="@+id/tvDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/tvDate"
-            android:textColor="@color/preto_40"
+            android:layout_marginTop="10dp"
             android:text="@string/date"
-            app:layout_constraintTop_toBottomOf="@id/tvDailyRecipe"
+            android:textColor="#795548"
+            android:textSize="15sp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            android:textSize="15sp"
-            android:layout_marginTop="10dp"/>
+            app:layout_constraintTop_toBottomOf="@id/tvDailyRecipe" />
         <ImageView
             android:layout_width="0dp"
             android:layout_height="200dp"
+            android:contentDescription="@string/image_meal"
             android:layout_marginHorizontal="20dp"
             app:layout_constraintTop_toBottomOf="@id/tvDate"
             android:layout_marginTop="20dp"
@@ -82,18 +86,20 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent">
         </ImageView>
+
         <TextView
+            android:id="@+id/tvMealName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:text="@string/eggs_benedict"
             android:textColor="@color/white"
             android:textStyle="bold"
-            android:text="@string/eggs_benedict"
             app:layout_constraintBottom_toBottomOf="@id/imgMeal"
             app:layout_constraintBottom_toTopOf="@id/btnMakeIt"
             app:layout_constraintLeft_toLeftOf="@id/imgMeal"
-            android:layout_marginHorizontal="20dp"
-            android:id="@+id/tvMealName"/>
-        <TextView
+            app:layout_constraintRight_toLeftOf="@id/tvMealTime" />
+        <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
@@ -118,21 +124,21 @@
             app:layout_constraintLeft_toLeftOf="parent"
             android:paddingHorizontal="20dp"
             app:layout_constraintRight_toRightOf="parent"/>
-        <TextView
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvRecentMeals"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/recent_meals"
-            android:id="@+id/tvRecentMeals"
-            android:textColor="@color/preto_40"
-            android:drawablePadding="10dp"
-            android:drawableStart="@drawable/clockicon"
-            app:layout_constraintTop_toBottomOf="@id/btnMakeIt"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginTop="20dp"
-            android:textStyle="bold"
-            android:textSize="18sp"
             android:layout_marginHorizontal="10dp"
-            />
+            android:layout_marginTop="20dp"
+            android:drawableStart="@drawable/clockicon"
+            android:drawablePadding="10dp"
+            android:text="@string/recent_meals"
+            android:textColor="#78909C"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btnMakeIt" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvListRecentMeals"

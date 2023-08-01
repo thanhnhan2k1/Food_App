@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="20dp"
@@ -13,7 +14,6 @@
         android:contentDescription="@string/image_meal"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginHorizontal="10dp"
-        android:background="@drawable/image_corner"
         android:src="@drawable/img"/>
     <TextView
         android:layout_marginTop="10dp"
@@ -26,13 +26,29 @@
         app:layout_constraintRight_toLeftOf="@id/btnLike"
         android:text="@string/home_made_pizza"
         android:id="@+id/tvMealName"/>
+
     <ImageButton
         android:id="@+id/btnLike"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="5dp"
+        android:background="@color/white"
+        android:contentDescription="@string/image_button_like"
+        android:minWidth="50dp"
+        android:minHeight="50dp"
+        android:src="@drawable/like_icon"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="RedundantDescriptionCheck" />
+    <ImageButton
+        android:id="@+id/btnUnLike"
+        android:layout_width="wrap_content"
+        android:visibility="invisible"
         android:minWidth="50dp"
         android:minHeight="50dp"
         android:layout_height="wrap_content"
-        android:src="@drawable/like_icon"
+        android:src="@drawable/like_full_icon"
         android:background="@color/white"
         android:layout_marginTop="5dp"
         android:contentDescription="@string/image_button_like"

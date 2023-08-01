@@ -27,4 +27,6 @@
     <string name="for_the_hollandaise_sauce">For the hollandaise sauce</string>
     <string name="how_to_make">How To Make</string>
     <string name="image_button_like">Image Button Like</string>
+    <string name="bg">background</string>
+    <string name="back">back</string>
 </resources>

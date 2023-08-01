@@ -3,6 +3,7 @@ package com.example.foodapp.data.room
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.foodapp.model.Meal
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MealDAO {
@@ -16,7 +17,7 @@ interface MealDAO {
     fun deleteMeal(meal: Meal)
 
     @Query("select * from meal")
-    fun getAllMeals(): List<Meal>
+    fun getAllMeals(): Flow<List<Meal>>
 
     @Query("select * from meal order by RANDOM() limit 10")
     fun get10RandomMeals(): LiveData<List<Meal>>

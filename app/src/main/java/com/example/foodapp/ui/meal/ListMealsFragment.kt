@@ -7,23 +7,18 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.net.toUri
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodapp.data.room.FoodDatabase
 import com.example.foodapp.R
 import com.example.foodapp.adapter.MealRecycleView
-import com.example.foodapp.data.retrofit.MealApi
-import com.example.foodapp.data.retrofit.RetrofitBuilder
 import com.example.foodapp.model.Meal
 import com.example.foodapp.data.room.MealRepository
 import com.example.foodapp.databinding.FragmentListMealsBinding
-import com.example.foodapp.databinding.MealItemBinding
 import com.example.foodapp.ui.*
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.squareup.picasso.Picasso
@@ -32,7 +27,6 @@ import java.time.Month
 import java.util.*
 
 class ListMealsFragment : Fragment() {
-    private var isLike = false
     private lateinit var shimmerFrameLayout: ShimmerFrameLayout
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -64,30 +58,40 @@ class ListMealsFragment : Fragment() {
         val adapter = MealRecycleView()
 
         binding.rvListRecentMeals.adapter = adapter
+        handleSuccessMeal(binding.rvListRecentMeals)
 
         viewModel.list10Meals.observe(viewLifecycleOwner) {
-            handleSuccessMeal(binding.rvListRecentMeals)
-            if (it != null) {
-                adapter.setData(it)
+            when(it){
+                null -> Toast.makeText(context, "Get data fail!", Toast.LENGTH_SHORT).show()
+                else -> {
+                    adapter.setData(it)
 
-                adapter.onItemClick = { mealItemBinding: MealItemBinding, meal: Meal ->
-                    if (!meal.strMeal.isNullOrEmpty()) {
-                        val newMeal = viewModel.getMealItem(meal.strMeal)
-                        mealItemBinding.tvMealName.setOnClickListener {
-                            navigateToFragmentDetail(newMeal)
-                        }
-
-                        mealItemBinding.img.setOnClickListener {
-                            navigateToFragmentDetail(newMeal)
-                        }
-                        isLike = false
-                        mealItemBinding.btnLike.setOnClickListener {
-                            addOrRemoveMealToListFavorite(newMeal, mealItemBinding, viewModel)
+                    adapter._onItemClick = {type, meal ->
+                        when (type)  {
+                            0 -> navigateToFragmentDetail(meal)
+                            1 -> viewModel.insertMeal(meal)
+                            2 -> viewModel.deleteMeal(meal)
                         }
                     }
                 }
             }
-
+//            shimmerFrameLayout.stopShimmerAnimation()
+//            shimmerFrameLayout.visibility = View.GONE
+//            if(it != null) {
+//
+//                adapter.setData(it)
+//
+//                adapter._onItemClick = {type, meal ->
+//                    when (type)  {
+//                        0 -> navigateToFragmentDetail(meal)
+//                        1 -> viewModel.insertMeal(meal)
+//                        2 -> viewModel.deleteMeal(meal)
+//                    }
+//                }
+//            }
+//            else{
+//                Toast.makeText(context, "Get data fail!", Toast.LENGTH_SHORT).show()
+//            }
         }
 
         viewModel.meal.observe(viewLifecycleOwner) {
@@ -96,18 +100,18 @@ class ListMealsFragment : Fragment() {
         }
 
         binding.btnMakeIt.setOnClickListener {
-            val meal = viewModel.getCurrentMeal()
-            meal?.let {
-                val action = ListMealsFragmentDirections.actionFragmentHomeToFragmentDetail(it)
-                findNavController().navigate(action)
+            when(val meal = viewModel.getCurrentMeal()){
+                null -> Toast.makeText(context, "No data", Toast.LENGTH_SHORT).show()
+                else -> {
+                    val action = ListMealsFragmentDirections.actionFragmentHomeToFragmentDetail(meal)
+                    findNavController().navigate(action)
+                }
             }
-
         }
 
         binding.imvSearch.setOnClickListener {
             findNavController().navigate(R.id.action_fragment_home_to_fragment_search)
         }
-//        val listMeals = MealRepository().get10RandomMeals()
         return binding.root
     }
 
@@ -120,36 +124,15 @@ class ListMealsFragment : Fragment() {
         action?.let { it1 -> findNavController().navigate(it1) }
     }
 
-    private fun addOrRemoveMealToListFavorite(
-        meal: Meal?,
-        mealItemBinding: MealItemBinding,
-        viewModel: MealViewModel
-    ) {
-        if (isLike) {
-            isLike = false
-            meal?.let { it1 ->
-                viewModel.deleteMeal(it1)
-            }
-            mealItemBinding.btnLike.setImageResource(R.drawable.like_icon)
-        } else {
-            isLike = true
-            meal?.let { it1 ->
-                viewModel.insertMeal(it1)
-            }
-            mealItemBinding.btnLike.setImageResource(R.drawable.like_full_icon)
-        }
-
-    }
-
     override fun onPause() {
-        super.onPause()
         shimmerFrameLayout.stopShimmerAnimation()
+        super.onPause()
     }
 
-//    override fun onResume() {
-//        super.onResume()
-//        shimmerFrameLayout.startShimmerAnimation()
-//    }
+    override fun onResume() {
+        super.onResume()
+        shimmerFrameLayout.startShimmerAnimation()
+    }
 
     private fun handleSuccessMeal(rv: RecyclerView) {
         rv.visibility = View.INVISIBLE
@@ -158,7 +141,7 @@ class ListMealsFragment : Fragment() {
             shimmerFrameLayout.stopShimmerAnimation()
             shimmerFrameLayout.visibility = View.GONE
             rv.visibility = View.VISIBLE
-        }, 3000)
+        }, 2000)
 
     }
 }

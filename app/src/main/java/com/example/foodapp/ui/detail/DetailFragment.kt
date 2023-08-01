@@ -4,14 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.foodapp.data.room.FoodDatabase
-import com.example.foodapp.R
 import com.example.foodapp.adapter.IngredientRecycleView
 import com.example.foodapp.databinding.FragmentDetailBinding
 import com.example.foodapp.data.room.MealRepository
@@ -45,19 +42,17 @@ class DetailFragment : Fragment() {
         val viewModel = ViewModelProvider(this, viewModelFactory)[MealViewModel::class.java]
 
         binding.tvAddToMyList.setOnClickListener {
-//            meal.isFavorite = true
             viewModel.insertMeal(meal)
-            binding.tvAddToMyList.setTextColor(resources.getColor(R.color.red))
-            binding.tvAddToMyList.setCompoundDrawablesRelative(
-                ResourcesCompat.getDrawable(
-                    resources,
-                    R.drawable.like_full_icon,
-                    null
-                ), null, null, null
-            )
+            binding.tvAddToMyList.visibility = View.INVISIBLE
+            binding.tvRemoveToMyList.visibility = View.VISIBLE
+        }
+        binding.tvRemoveToMyList.setOnClickListener {
+            viewModel.deleteMeal(meal)
+            binding.tvAddToMyList.visibility = View.VISIBLE
+            binding.tvRemoveToMyList.visibility = View.INVISIBLE
         }
         binding.btnBack.setOnClickListener {
-            onDestroyView()
+            onDestroy()
         }
         return binding.root
     }

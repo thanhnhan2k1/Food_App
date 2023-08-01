@@ -1,6 +1,7 @@
 package com.example.foodapp.ui.meal
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,6 +12,9 @@ import com.example.foodapp.model.Meal
 import com.example.foodapp.data.room.MealDAO
 import com.example.foodapp.data.room.MealRepository
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.catch
 
 class MealViewModel(
     private var database: MealDAO,
@@ -22,9 +26,9 @@ class MealViewModel(
     private var _list10Meals = MutableLiveData<List<Meal>?>()
     val list10Meals: LiveData<List<Meal>?>
         get() = _list10Meals
-    private var _listFavoriteMeals = MutableLiveData<List<Meal>?>()
-    val listFavoriteMeals: LiveData<List<Meal>?>
-        get() = _listFavoriteMeals
+//    private var _listFavoriteMeals = MutableLiveData<List<Meal>?>()
+//    val listFavoriteMeals: LiveData<List<Meal>?>
+//        get() = _listFavoriteMeals
 
     private var _listCategories = MutableLiveData<List<Category>?>()
 
@@ -60,16 +64,23 @@ class MealViewModel(
 
         }
         val position = (0..(_listCategories.value?.size?.minus(1) ?: 0)).random()
-        _listCategories.value?.get(position)?.strCategory?.let {
-            MealApi().fetchMeals(it).collect {
+
+        if(_listCategories.value?.isEmpty() == true){
+            withContext(Dispatchers.Main) {
+                _list10Meals.value = emptyList()
+            }
+        }
+        else{
+            _listCategories.value?.get(position)?.strCategory?.let {
+                MealApi().fetchMeals(it).collect {
 //                _list10Meals.postValue(it.meals)
-                withContext(Dispatchers.Main) {
-                    _list10Meals.value = it.meals
+                    withContext(Dispatchers.Main) {
+                        _list10Meals.value = it.meals
 //                    Log.i("MealViewModel", list10Meals.value.toString())
+                    }
                 }
             }
         }
-
     }
 
     fun getCurrentMeal(): Meal? {
@@ -114,13 +125,11 @@ class MealViewModel(
         }
     }
 
-    private suspend fun getListFavoriteMeals() {
-        repository.getAllMeals().collect {
-            withContext(Dispatchers.Main) {
-                _listFavoriteMeals.value = it
-            }
+    fun getListFavoriteMeals() : Flow<List<Meal>> = database.getAllMeals()
+        .catch {
+            Log.d("Database", "Get data fail!")
+            emit(emptyList())
         }
-    }
 
     fun getListMealsByFirstLetter(key: String) {
         viewModelScope.launch(Dispatchers.IO) {

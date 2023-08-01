@@ -6,7 +6,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.coroutineScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodapp.data.room.FoodDatabase
@@ -15,10 +17,10 @@ import com.example.foodapp.adapter.MealRecycleView
 import com.example.foodapp.model.Meal
 import com.example.foodapp.data.room.MealRepository
 import com.example.foodapp.databinding.FragmentSavedBinding
-import com.example.foodapp.databinding.MealItemBinding
 import com.example.foodapp.ui.meal.MealViewModel
 import com.example.foodapp.ui.meal.MealViewModelFactory
 import com.facebook.shimmer.ShimmerFrameLayout
+import kotlinx.coroutines.launch
 
 class SavedFragment : Fragment() {
     private lateinit var shimmerFrameLayout: ShimmerFrameLayout
@@ -37,31 +39,36 @@ class SavedFragment : Fragment() {
 
         val adapter = MealRecycleView()
         shimmerFrameLayout = binding.shimmerViewContainer
+        shimmerFrameLayout.startShimmerAnimation()
         binding.rvListMeals.adapter = adapter
+        handleSuccessMeal(binding.rvListMeals)
+        lifecycle.coroutineScope.launch {
+            viewModel.getListFavoriteMeals().collect {
+                if (it.isEmpty()) {
+                    Toast.makeText(context, "No data found!", Toast.LENGTH_SHORT).show()
+                }
 
-        viewModel.listFavoriteMeals.observe(viewLifecycleOwner) {
-            handleSuccessMeal(binding.rvListMeals)
-            it?.let { it1 -> adapter.setData(it1) }
-            adapter.onItemClick = { mealItemBinding: MealItemBinding, meal: Meal ->
-                mealItemBinding.tvMealName.setOnClickListener {
-                    val action = SavedFragmentDirections.actionFragmentSavedToFragmentDetail(meal)
-                    findNavController().navigate(action)
+                adapter.setData(it)
+                adapter._onItemClick = { type, meal ->
+                    when (type) {
+                        0 -> navigateToFragmentDetail(meal)
+                        1 -> viewModel.insertMeal(meal)
+                        2 -> viewModel.deleteMeal(meal)
+                    }
                 }
-                mealItemBinding.img.setOnClickListener {
-                    val action = SavedFragmentDirections.actionFragmentSavedToFragmentDetail(meal)
-                    findNavController().navigate(action)
-                }
-                mealItemBinding.btnLike.setImageResource(R.drawable.like_full_icon)
-                mealItemBinding.btnLike.setOnClickListener {
-                    viewModel.deleteMeal(meal)
-                    adapter.removeMeal(meal)
-                }
+//                shimmerFrameLayout.stopShimmerAnimation()
+//                shimmerFrameLayout.visibility = View.GONE
+//                adapter._setView = { type ->
+//                    when (type) {
+//                        0 -> Log.d("SavedFragment", "Set list favorite view")
+//                    }
+//                }
             }
         }
+
         binding.search.setOnClickListener {
             findNavController().navigate(R.id.action_fragment_saved_to_fragment_search)
         }
-
 
         return binding.root
     }
@@ -73,8 +80,26 @@ class SavedFragment : Fragment() {
             shimmerFrameLayout.stopShimmerAnimation()
             shimmerFrameLayout.visibility = View.GONE
             rv.visibility = View.VISIBLE
-        }, 3000)
+        }, 2000)
 
     }
 
+    override fun onPause() {
+        super.onPause()
+        shimmerFrameLayout.stopShimmerAnimation()
+    }
+
+    override fun onResume() {
+        shimmerFrameLayout.startShimmerAnimation()
+        super.onResume()
+    }
+
+    private fun navigateToFragmentDetail(meal: Meal?) {
+        val action = meal?.let { it1 ->
+            SavedFragmentDirections.actionFragmentSavedToFragmentDetail(
+                it1
+            )
+        }
+        action?.let { it1 -> findNavController().navigate(it1) }
+    }
 }
