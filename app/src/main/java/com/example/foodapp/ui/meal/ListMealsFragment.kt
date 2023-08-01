@@ -61,11 +61,12 @@ class ListMealsFragment : Fragment() {
         handleSuccessMeal(binding.rvListRecentMeals)
 
         viewModel.list10Meals.observe(viewLifecycleOwner) {
-            when(it){
-                null -> Toast.makeText(context, "Get data fail!", Toast.LENGTH_SHORT).show()
-                else -> {
+            when(it.isNullOrEmpty()){
+                true -> {
+                    Toast.makeText(context, "Get data fail!", Toast.LENGTH_SHORT).show()
+                }
+                false -> {
                     adapter.setData(it)
-
                     adapter._onItemClick = {type, meal ->
                         when (type)  {
                             0 -> navigateToFragmentDetail(meal)

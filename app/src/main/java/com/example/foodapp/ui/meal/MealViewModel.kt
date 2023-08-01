@@ -13,7 +13,6 @@ import com.example.foodapp.data.room.MealDAO
 import com.example.foodapp.data.room.MealRepository
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.catch
 
 class MealViewModel(
@@ -26,22 +25,14 @@ class MealViewModel(
     private var _list10Meals = MutableLiveData<List<Meal>?>()
     val list10Meals: LiveData<List<Meal>?>
         get() = _list10Meals
-//    private var _listFavoriteMeals = MutableLiveData<List<Meal>?>()
-//    val listFavoriteMeals: LiveData<List<Meal>?>
-//        get() = _listFavoriteMeals
 
     private var _listCategories = MutableLiveData<List<Category>?>()
 
-
-    //    val listCategories: LiveData<List<Category>?>
-//        get() = _listCategories
     private var _meal = MutableLiveData<Meal>()
     val meal: LiveData<Meal>
         get() = _meal
     private var _mealItem = MutableLiveData<Meal>()
 
-    //    val mealItem: LiveData<Meal>
-//        get() = _mealItem
     private var _listFilterMeals = MutableLiveData<List<Meal>?>()
     val listFilterMeals: LiveData<List<Meal>?>
         get() = _listFilterMeals
@@ -73,10 +64,8 @@ class MealViewModel(
         else{
             _listCategories.value?.get(position)?.strCategory?.let {
                 MealApi().fetchMeals(it).collect {
-//                _list10Meals.postValue(it.meals)
                     withContext(Dispatchers.Main) {
-                        _list10Meals.value = it.meals
-//                    Log.i("MealViewModel", list10Meals.value.toString())
+                        _list10Meals.value = it.meals ?: emptyList()
                     }
                 }
             }
@@ -87,10 +76,10 @@ class MealViewModel(
         return _meal.value
     }
 
-    fun getMealItem(name: String): Meal? {
-        getMealByName(name)
-        return _mealItem.value
-    }
+//    fun getMealItem(name: String): Meal? {
+//        getMealByName(name)
+//        return _mealItem.value
+//    }
 
     private suspend fun getRandomMeal() {
         MealApi().fetchRandomMeal().collect {
@@ -101,15 +90,15 @@ class MealViewModel(
         }
     }
 
-    private fun getMealByName(name: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            MealApi().fetchMealByName(name).collect {
-                withContext(Dispatchers.Main) {
-                    _mealItem.value = it.meals?.get(0)
-                }
-            }
-        }
-    }
+//    private fun getMealByName(name: String) {
+//        viewModelScope.launch(Dispatchers.IO) {
+//            MealApi().fetchMealByName(name).collect {
+//                withContext(Dispatchers.Main) {
+//                    _mealItem.value = it.meals?.get(0)
+//                }
+//            }
+//        }
+//    }
 
     fun insertMeal(meal: Meal) {
         viewModelScope.launch(Dispatchers.IO) {
