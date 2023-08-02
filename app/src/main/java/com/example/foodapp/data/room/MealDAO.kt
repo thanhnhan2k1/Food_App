@@ -25,6 +25,6 @@ interface MealDAO {
     @Query("delete from meal")
     fun deleteAllMeal()
 
-    @Query("select strMeal from meal where idMeal = :id")
-    fun getMealById(id: Int): String
+    @Query("select * from meal where idMeal = :id")
+    fun getMealById(id: Int): Flow<MealModel>
 }

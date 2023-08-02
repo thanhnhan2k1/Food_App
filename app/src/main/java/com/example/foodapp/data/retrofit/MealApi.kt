@@ -41,4 +41,10 @@ class MealApi {
     }.catch { e ->
         Log.d("API", "Get data fail!")
     }
+    fun fetchMealById(id: String): Flow<Meals> = flow {
+        emit(RetrofitBuilder.getApiInterface().getMealDetailsById(id))
+    }.catch { e ->
+        Log.d("API", "Get data fail!")
+    }
+
 }

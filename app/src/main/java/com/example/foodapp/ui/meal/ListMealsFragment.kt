@@ -3,6 +3,7 @@ package com.example.foodapp.ui.meal
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -61,7 +62,7 @@ class ListMealsFragment : Fragment() {
         handleSuccessMeal(binding.rvListRecentMeals)
 
         viewModel.list10Meals.observe(viewLifecycleOwner) {
-            when(it.isNullOrEmpty()){
+            when (it.isNullOrEmpty()) {
                 true -> {
                     Toast.makeText(context, "Get data fail!", Toast.LENGTH_SHORT).show()
                 }
@@ -69,20 +70,25 @@ class ListMealsFragment : Fragment() {
 //                    Log.d("ListMealFragment", "List: ${it.size}")
                     binding.btnSeeAll.visibility = View.VISIBLE
                     adapter.setData(it)
-                    adapter._onItemClick = {type, meal ->
-                        meal.strMeal?.let {
-                            val item = viewModel.getMeal(meal.strMeal)
-                            when (type)  {
-                                0 -> navigateToFragmentDetail(item)
-                                1 -> item?.let {
-                                        it1 ->
-                                    viewModel.insertMeal(it1) }
-                                2 -> item?.let { it1 ->
-                                    viewModel.deleteMeal(it1) }
+                    adapter._onItemClick = { type, meal ->
+                        viewModel.getMealById(meal.idMeal)
+                        viewModel.mealItem.observe(viewLifecycleOwner){
+                            when (type) {
+                                0 -> {
+                                    navigateToFragmentDetail(it)
+                                }
+                                1 -> {
+                                    viewModel.insertMeal(it)
+
+                                }
+
+                                2 -> {
+                                    viewModel.deleteMeal(it)
+                                }
                             }
                         }
-
                     }
+//                    }
                 }
             }
 //            shimmerFrameLayout.stopShimmerAnimation()
@@ -95,10 +101,11 @@ class ListMealsFragment : Fragment() {
         }
 
         binding.btnMakeIt.setOnClickListener {
-            when(val meal = viewModel.getCurrentMeal()){
+            when (val meal = viewModel.getCurrentMeal()) {
                 null -> Toast.makeText(context, "No data", Toast.LENGTH_SHORT).show()
                 else -> {
-                    val action = ListMealsFragmentDirections.actionFragmentHomeToFragmentDetail(meal)
+                    val action =
+                        ListMealsFragmentDirections.actionFragmentHomeToFragmentDetail(meal)
                     findNavController().navigate(action)
                 }
             }

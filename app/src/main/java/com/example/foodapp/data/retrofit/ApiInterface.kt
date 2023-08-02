@@ -10,8 +10,8 @@ interface ApiInterface {
     @GET("search.php")
     suspend fun getAllMealsByFirstLetter(@Query("f") f: String): Meals
 
-    @GET("lookup.php/{id}")
-    suspend fun getMealDetailsById(@Path("id") id: Int)
+    @GET("lookup.php")
+    suspend fun getMealDetailsById(@Query("i") i: String) : Meals
 
     @GET("search.php")
     suspend fun searchMealByName(@Query("s") s: String): Meals

@@ -18,6 +18,8 @@ import com.example.foodapp.model.toMealsModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flow
 
 class MealViewModel(
     private var database: MealDAO,
@@ -36,6 +38,9 @@ class MealViewModel(
     val meal: LiveData<MealModel>
         get() = _meal
     private var _mealItem = MutableLiveData<MealModel>()
+    val mealItem: LiveData<MealModel>
+        get() = _mealItem
+
 
     private var _listFilterMeals = MutableLiveData<List<MealModel>?>()
     val listFilterMeals: LiveData<List<MealModel>?>
@@ -55,21 +60,20 @@ class MealViewModel(
 
     private suspend fun getAllMeals() {
         MealApi().fetchCategories().collect {
-            withContext(Dispatchers.Main){
+            withContext(Dispatchers.Main) {
                 _listCategories.value = it.toCatogoriesModel().categories
             }
 
         }
-        val position = (0..(_listCategories.value?.size?.minus(1) ?: 0)).random()
 
-        if(_listCategories.value?.isEmpty() == true){
+        if (_listCategories.value?.isEmpty() == true) {
             MealApi().fetchMeals("Seafood").collect {
                 withContext(Dispatchers.Main) {
                     _list10Meals.value = it.toMealsModel().meals
                 }
             }
-        }
-        else{
+        } else {
+            val position = (0..(_listCategories.value?.size?.minus(1) ?: 0)).random()
             _listCategories.value?.get(position)?.strCategory?.let {
                 MealApi().fetchMeals(it).collect {
                     withContext(Dispatchers.Main) {
@@ -85,15 +89,24 @@ class MealViewModel(
     fun getCurrentMeal(): MealModel? {
         return _meal.value
     }
-    fun getMeal(name: String): MealModel?{
+
+//    fun getMealById(id: Int): Flow<MealModel> = database.getMealById(id)
+//        .catch {
+//            Log.d("Database", "No meal found!")
+//
+//        }
+
+    fun getMealById(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            MealApi().fetchMealByName(name).collect{
-                withContext(Dispatchers.Main){
+            MealApi().fetchMealById(id).collect {
+                withContext(Dispatchers.Main) {
+                    Log.d("ViewModel", it.toMealsModel().meals[0].toString())
                     _mealItem.value = it.toMealsModel().meals[0]
+
                 }
             }
         }
-        return _mealItem.value
+//        return _mealItem.value
     }
 
 //    fun getMealItem(name: String): Meal? {
@@ -124,6 +137,9 @@ class MealViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             meal.isLike = true
             database.insertMeal(meal)
+            withContext(Dispatchers.Main) {
+                _mealItem.value = meal
+            }
             this@MealViewModel.getListFavoriteMeals()
         }
     }
@@ -135,7 +151,7 @@ class MealViewModel(
         }
     }
 
-    fun getListFavoriteMeals() : Flow<List<MealModel>> = database.getAllMeals()
+    fun getListFavoriteMeals(): Flow<List<MealModel>> = database.getAllMeals()
         .catch {
             Log.d("Database", "Get data fail!")
             emit(emptyList())
