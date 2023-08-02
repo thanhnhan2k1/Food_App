@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="20dp"
+    android:layout_height="match_parent"
     tools:context=".ui.detail.DetailFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/imgMeal"
             android:layout_width="0dp"
-            android:layout_height="250dp"
+            android:layout_height="280dp"
             android:contentDescription="@string/image_meal"
             android:scaleType="fitXY"
             android:src="@drawable/img"
@@ -32,12 +31,11 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageButton
+        <ImageView
             android:id="@+id/btnBack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minHeight="50dp"
-            android:minWidth="50dp"
+            android:layout_marginTop="10dp"
             android:layout_marginHorizontal="15dp"
             android:src="@drawable/baseline_arrow_back_ios_24"
             android:contentDescription="@string/back"
@@ -48,8 +46,7 @@
             android:id="@+id/search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minWidth="50dp"
-            android:minHeight="50dp"
+            android:layout_marginTop="10dp"
             android:layout_marginHorizontal="10dp"
             android:contentDescription="@string/search_desc"
             android:src="@drawable/baseline_search_white_24"
@@ -77,13 +74,14 @@
             android:textColor="@color/white"
             android:textSize="25sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@id/imgMeal"
+            app:layout_constraintBottom_toBottomOf="@id/tvViewer"
             app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvOwner" />
 
         <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvViewer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableStart="@drawable/eye_color_black10"
@@ -96,6 +94,7 @@
             android:textSize="14sp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/imgMeal"
             app:layout_constraintTop_toBottomOf="@id/tvMealName" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -138,7 +137,7 @@
             android:drawablePadding="10dp"
             android:gravity="center"
             android:foregroundGravity="center"
-            android:text="@string/add_to_my_list"
+            android:text="@string/remove_to_my_list"
             android:textColor="@color/red"
             android:textSize="14sp"
             app:layout_constraintLeft_toRightOf="@id/tvMealTime"
@@ -194,4 +193,4 @@
             />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</ScrollView>
+</androidx.core.widget.NestedScrollView>

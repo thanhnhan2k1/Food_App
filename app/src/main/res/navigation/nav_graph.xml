@@ -44,9 +44,12 @@
         android:id="@+id/fragment_detail"
         android:name="com.example.foodapp.ui.detail.DetailFragment"
         tools:layout="@layout/fragment_detail">
+        <action
+            android:id="@+id/action_fragment_detail_to_fragment_search"
+            app:destination="@+id/fragment_search"/>
         <argument
             android:name="meal"
-            app:argType="com.example.foodapp.model.Meal" />
+            app:argType="com.example.foodapp.model.MealModel" />
     </fragment>
     <fragment
         android:id="@+id/fragment_search"

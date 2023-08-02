@@ -1,30 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".ui.search.SearchFragment">
+
     <androidx.appcompat.widget.SearchView
-        android:layout_marginTop="30dp"
-        android:layout_marginHorizontal="10dp"
-        android:background="@drawable/button_solid"
+        android:id="@+id/search_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/search_view"
-        android:queryHint="Search by first letter"
-        app:iconifiedByDefault="false"
-        />
-    <androidx.recyclerview.widget.RecyclerView
         android:layout_marginHorizontal="10dp"
         android:layout_marginTop="30dp"
-        android:nestedScrollingEnabled="false"
+        android:background="@drawable/button_solid"
+        android:queryHint="Search by first letter"
+        app:iconifiedByDefault="false" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_list_meals"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/rv_list_meals"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginVertical="30dp"
+        android:nestedScrollingEnabled="false"
         android:orientation="vertical"
-        tools:listitem="@layout/meal_item"
-        tools:itemCount="5"/>
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:itemCount="5"
+        tools:listitem="@layout/meal_item" />
+
 </LinearLayout>

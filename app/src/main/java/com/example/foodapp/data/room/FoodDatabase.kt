@@ -4,9 +4,9 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.foodapp.model.Meal
+import com.example.foodapp.model.MealModel
 
-@Database(entities = [Meal::class], version = 15, exportSchema = false)
+@Database(entities = [MealModel::class], version = 1, exportSchema = false)
 abstract class FoodDatabase : RoomDatabase() {
     abstract fun mealDAO(): MealDAO
     companion object{

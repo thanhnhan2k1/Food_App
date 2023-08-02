@@ -1,13 +1,15 @@
 package com.example.foodapp.data.retrofit
 
 import android.util.Log
-import com.example.foodapp.model.Categories
-import com.example.foodapp.model.Meals
+import com.example.foodapp.data.entity.Categories
+import com.example.foodapp.data.entity.Meal
+import com.example.foodapp.data.entity.Meals
 import kotlinx.coroutines.flow.*
 
 class MealApi {
     fun fetchMeals(category: String): Flow<Meals> = flow {
         emit(RetrofitBuilder.getApiInterface().getMealsByCategory(category))
+//        emit(Meals(listOf(Meal())))
     }.catch {
         val meals = Meals(emptyList())
         Log.d("API", "Get data fail!")

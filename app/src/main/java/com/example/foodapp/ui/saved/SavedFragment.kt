@@ -14,9 +14,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.foodapp.data.room.FoodDatabase
 import com.example.foodapp.R
 import com.example.foodapp.adapter.MealRecycleView
-import com.example.foodapp.model.Meal
+import com.example.foodapp.data.entity.Meal
 import com.example.foodapp.data.room.MealRepository
 import com.example.foodapp.databinding.FragmentSavedBinding
+import com.example.foodapp.model.MealModel
 import com.example.foodapp.ui.meal.MealViewModel
 import com.example.foodapp.ui.meal.MealViewModelFactory
 import com.facebook.shimmer.ShimmerFrameLayout
@@ -51,7 +52,9 @@ class SavedFragment : Fragment() {
                 adapter.setData(it)
                 adapter._onItemClick = { type, meal ->
                     when (type) {
-                        0 -> navigateToFragmentDetail(meal)
+                        0 -> {
+                            navigateToFragmentDetail(meal)
+                        }
                         1 -> viewModel.insertMeal(meal)
                         2 -> viewModel.deleteMeal(meal)
                     }
@@ -94,7 +97,7 @@ class SavedFragment : Fragment() {
         super.onResume()
     }
 
-    private fun navigateToFragmentDetail(meal: Meal?) {
+    private fun navigateToFragmentDetail(meal: MealModel?) {
         val action = meal?.let { it1 ->
             SavedFragmentDirections.actionFragmentSavedToFragmentDetail(
                 it1

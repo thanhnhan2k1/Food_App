@@ -16,9 +16,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.foodapp.data.room.FoodDatabase
 import com.example.foodapp.R
 import com.example.foodapp.adapter.MealRecycleView
-import com.example.foodapp.model.Meal
 import com.example.foodapp.data.room.MealRepository
 import com.example.foodapp.databinding.FragmentListMealsBinding
+import com.example.foodapp.model.MealModel
 import com.example.foodapp.ui.*
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.squareup.picasso.Picasso
@@ -66,33 +66,27 @@ class ListMealsFragment : Fragment() {
                     Toast.makeText(context, "Get data fail!", Toast.LENGTH_SHORT).show()
                 }
                 false -> {
+//                    Log.d("ListMealFragment", "List: ${it.size}")
+                    binding.btnSeeAll.visibility = View.VISIBLE
                     adapter.setData(it)
                     adapter._onItemClick = {type, meal ->
-                        when (type)  {
-                            0 -> navigateToFragmentDetail(meal)
-                            1 -> viewModel.insertMeal(meal)
-                            2 -> viewModel.deleteMeal(meal)
+                        meal.strMeal?.let {
+                            val item = viewModel.getMeal(meal.strMeal)
+                            when (type)  {
+                                0 -> navigateToFragmentDetail(item)
+                                1 -> item?.let {
+                                        it1 ->
+                                    viewModel.insertMeal(it1) }
+                                2 -> item?.let { it1 ->
+                                    viewModel.deleteMeal(it1) }
+                            }
                         }
+
                     }
                 }
             }
 //            shimmerFrameLayout.stopShimmerAnimation()
 //            shimmerFrameLayout.visibility = View.GONE
-//            if(it != null) {
-//
-//                adapter.setData(it)
-//
-//                adapter._onItemClick = {type, meal ->
-//                    when (type)  {
-//                        0 -> navigateToFragmentDetail(meal)
-//                        1 -> viewModel.insertMeal(meal)
-//                        2 -> viewModel.deleteMeal(meal)
-//                    }
-//                }
-//            }
-//            else{
-//                Toast.makeText(context, "Get data fail!", Toast.LENGTH_SHORT).show()
-//            }
         }
 
         viewModel.meal.observe(viewLifecycleOwner) {
@@ -116,7 +110,7 @@ class ListMealsFragment : Fragment() {
         return binding.root
     }
 
-    private fun navigateToFragmentDetail(meal: Meal?) {
+    private fun navigateToFragmentDetail(meal: MealModel?) {
         val action = meal?.let { it1 ->
             ListMealsFragmentDirections.actionFragmentHomeToFragmentDetail(
                 it1

@@ -4,11 +4,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodapp.databinding.IngredientItemBinding
-import com.example.foodapp.model.Ingredient
-import com.example.foodapp.model.Meal
+import com.example.foodapp.data.entity.Ingredient
+import com.example.foodapp.data.entity.Meal
+import com.example.foodapp.model.MealModel
 
-class IngredientRecycleView(private val meal: Meal) :
-    RecyclerView.Adapter<IngredientRecycleView.IngeredientViewHolder>() {
+class IngredientRecycleView(private val meal: MealModel) :
+    RecyclerView.Adapter<IngredientRecycleView.IngredientViewHolder>() {
     private val listIngredient = mutableListOf<Ingredient>()
 
 
@@ -117,7 +118,7 @@ class IngredientRecycleView(private val meal: Meal) :
         notifyDataSetChanged()
     }
 
-    class IngeredientViewHolder(private val binding: IngredientItemBinding) :
+    class IngredientViewHolder(private val binding: IngredientItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(ingredient: Ingredient) {
             binding.tvIngredientName.text = ingredient.strIngredient
@@ -125,15 +126,15 @@ class IngredientRecycleView(private val meal: Meal) :
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IngeredientViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IngredientViewHolder {
         val binding =
             IngredientItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return IngeredientViewHolder(binding)
+        return IngredientViewHolder(binding)
     }
 
     override fun getItemCount(): Int = listIngredient.size
 
-    override fun onBindViewHolder(holder: IngeredientViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: IngredientViewHolder, position: Int) {
         holder.bind(listIngredient[position])
     }
 }

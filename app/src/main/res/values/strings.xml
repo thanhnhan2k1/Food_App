@@ -29,4 +29,5 @@
     <string name="image_button_like">Image Button Like</string>
     <string name="bg">background</string>
     <string name="back">back</string>
+    <string name="remove_to_my_list">Remove to my list</string>
 </resources>

@@ -1,7 +1,7 @@
 package com.example.foodapp.data.retrofit
 
-import com.example.foodapp.model.Categories
-import com.example.foodapp.model.Meals
+import com.example.foodapp.data.entity.Categories
+import com.example.foodapp.data.entity.Meals
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query

@@ -1,4 +1,4 @@
-package com.example.foodapp.model
+package com.example.foodapp.data.entity
 
 
 import android.os.Parcelable
@@ -8,8 +8,7 @@ import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-@Parcelize
-@Entity("meal")
+
 @Serializable
 data class Meal(
     @SerialName("dateModified")
@@ -119,6 +118,4 @@ data class Meal(
     val strTags: String?,
     @SerialName("strYoutube")
     val strYoutube: String?
-) : Parcelable{
-
-}
+)

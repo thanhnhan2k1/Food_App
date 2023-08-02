@@ -62,7 +62,7 @@
         app:layout_constraintTop_toBottomOf="@id/tvMealName"
         app:layout_constraintLeft_toRightOf="@id/img"
         android:id="@+id/tvTime"
-        android:drawableStart="@drawable/clockicon"
+        android:drawableStart="@drawable/clock_icon"
         android:drawablePadding="10dp"
         android:text="@string/time"
         android:layout_marginHorizontal="10dp"
