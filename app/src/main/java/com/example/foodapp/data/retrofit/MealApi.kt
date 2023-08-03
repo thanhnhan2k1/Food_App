@@ -12,14 +12,14 @@ class MealApi {
 //        emit(Meals(listOf(Meal())))
     }.catch {
         val meals = Meals(emptyList())
-        Log.d("API", "Get data fail!")
+        Log.d("API", "Get list meals fail!")
         this.emit(meals)
     }
 
     fun fetchCategories(): Flow<Categories> = flow {
         emit(RetrofitBuilder.getApiInterface().getAllCategories())
     }.catch {
-        Log.d("API", "Get data fail!")
+        Log.d("API", "Get list categories fail!")
         val categories = Categories(emptyList())
         this.emit(categories)
     }
@@ -27,7 +27,7 @@ class MealApi {
     fun fetchRandomMeal(): Flow<Meals> = flow {
         emit(RetrofitBuilder.getApiInterface().getRandomMeal())
     }.catch { e ->
-        Log.d("API", "Get data fail!")
+        Log.d("API", "Get random meal fail!")
     }
 
     fun fetchMealByName(name: String): Flow<Meals> = flow {
@@ -39,12 +39,12 @@ class MealApi {
     fun fetchMealsByFirstLetter(key: String): Flow<Meals> = flow {
         emit(RetrofitBuilder.getApiInterface().getAllMealsByFirstLetter(key))
     }.catch { e ->
-        Log.d("API", "Get data fail!")
+        Log.d("API", "Get meals by first letter fail!")
     }
     fun fetchMealById(id: String): Flow<Meals> = flow {
         emit(RetrofitBuilder.getApiInterface().getMealDetailsById(id))
     }.catch { e ->
-        Log.d("API", "Get data fail!")
+        Log.d("API", "Get meal by id fail!")
     }
 
 }

@@ -60,6 +60,8 @@ class ListMealsFragment : Fragment() {
             when (it.isNullOrEmpty()) {
                 true -> {
                     Toast.makeText(context, "Get data fail!", Toast.LENGTH_SHORT).show()
+                    shimmerFrameLayout.stopShimmerAnimation()
+                    shimmerFrameLayout.visibility = View.GONE
                 }
                 false -> {
                     binding.btnSeeAll.visibility = View.VISIBLE

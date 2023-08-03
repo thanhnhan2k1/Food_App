@@ -39,6 +39,8 @@ class SavedFragment : Fragment() {
         lifecycle.coroutineScope.launch {
             viewModel.getListFavoriteMeals().collect {
                 if (it.isEmpty()) {
+                    shimmerFrameLayout.stopShimmerAnimation()
+                    shimmerFrameLayout.visibility = View.GONE
                     Toast.makeText(context, "No data found!", Toast.LENGTH_SHORT).show()
                 }
                 else{

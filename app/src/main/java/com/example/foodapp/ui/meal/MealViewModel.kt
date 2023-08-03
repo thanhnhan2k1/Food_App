@@ -59,7 +59,12 @@ class MealViewModel(
         if (_listCategories.value?.isEmpty() == true) {
             MealApi().fetchMeals("Seafood").collect {
                 withContext(Dispatchers.Main) {
-                    _list10Meals.value = it.toMealsModel().meals
+                    val listMeals = it.toMealsModel().meals
+                    val list = mutableListOf<MealModel>()
+                    for(item in listMeals) MealApi().fetchMealById(item.idMeal).collect {
+                        list.add(it.toMealsModel().meals[0])
+                    }
+                    _list10Meals.value = list
                 }
             }
         } else {

@@ -22,6 +22,7 @@ class SearchFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
+
         val binding = FragmentSearchBinding.inflate(inflater, container, false)
 
         val application = requireNotNull(this.activity).application
@@ -31,6 +32,7 @@ class SearchFragment : Fragment() {
 
         val adapter = MealRecycleView()
         binding.rvListMeals.adapter = adapter
+        initObserver(viewModel, adapter)
 
         binding.searchView.setOnQueryTextListener(object :
             SearchView.OnQueryTextListener {
@@ -41,25 +43,6 @@ class SearchFragment : Fragment() {
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (!newText.isNullOrBlank() && newText.length == 1) {
                     viewModel.getListMealsByFirstLetter(newText)
-                    viewModel.listFilterMeals.observe(viewLifecycleOwner) {
-                        it?.let { it1 ->
-                            adapter.setData(it1)
-                            adapter._onItemClick = { type, meal ->
-                                when (type) {
-                                    0 -> {
-                                        val action =
-                                            SearchFragmentDirections.actionFragmentSearchToFragmentDetail(
-                                                meal
-                                            )
-                                        findNavController().navigate(action)
-                                    }
-                                    1 -> viewModel.insertMeal(meal)
-                                    2 -> viewModel.deleteMeal(meal)
-                                }
-                            }
-                            if(it.isEmpty()) Toast.makeText(context, "No result found!", Toast.LENGTH_SHORT).show()
-                        }
-                    }
                 } else {
                     adapter.setData(emptyList())
                 }
@@ -68,6 +51,33 @@ class SearchFragment : Fragment() {
 
         })
         return binding.root
+    }
+
+    private fun initObserver(viewModel: MealViewModel, adapter: MealRecycleView) {
+        viewModel.listFilterMeals.observe(viewLifecycleOwner) {
+            it?.let { it1 ->
+                adapter.setData(it1)
+                adapter._onItemClick = { type, meal ->
+                    when (type) {
+                        0 -> {
+                            val action =
+                                SearchFragmentDirections.actionFragmentSearchToFragmentDetail(
+                                    meal
+                                )
+                            findNavController().navigate(action)
+                        }
+                        1 -> viewModel.insertMeal(meal)
+                        2 -> viewModel.deleteMeal(meal)
+                    }
+                }
+                if (it.isEmpty()) Toast.makeText(context, "No result found!", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
     }
 
 }

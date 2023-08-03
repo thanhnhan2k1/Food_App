@@ -10,7 +10,6 @@
         android:layout_height="wrap_content"
         android:id="@+id/tvIngredientName"
         android:layout_weight="2"
-        android:checked="false"
         android:text="@string/white_wine_vinegar"/>
     <TextView
         android:layout_width="wrap_content"

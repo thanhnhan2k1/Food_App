@@ -123,6 +123,19 @@ class IngredientRecycleView(private val meal: MealModel) :
         fun bind(ingredient: Ingredient) {
             binding.tvIngredientName.text = ingredient.strIngredient
             binding.tvUnit.text = ingredient.strMeasure
+            var isClick = false
+            binding.tvIngredientName.setOnClickListener {
+                when(isClick){
+                    true -> {
+                        isClick = false
+                        binding.tvIngredientName.isChecked = false
+                    }
+                    false -> {
+                        isClick = true
+                        binding.tvIngredientName.isChecked = true
+                    }
+                }
+            }
         }
     }
 
