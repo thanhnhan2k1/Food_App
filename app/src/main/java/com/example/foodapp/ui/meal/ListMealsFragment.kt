@@ -2,7 +2,6 @@ package com.example.foodapp.ui.meal
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -38,7 +37,7 @@ class ListMealsFragment : Fragment() {
 
         val calender = Calendar.getInstance()
         //val time = LocalDate.now()
-        var day = DayOfWeek.of(calender.get(Calendar.DAY_OF_WEEK)).name
+        var day = DayOfWeek.of(calender.get(Calendar.DAY_OF_WEEK).minus(1)).name
         day = day.substring(0, 1) + day.substring(1).lowercase()
         var month = Month.of(calender.get(Calendar.MONTH)).name
         month = month.substring(0, 1) + month.substring(1).lowercase()
@@ -69,27 +68,24 @@ class ListMealsFragment : Fragment() {
                     shimmerFrameLayout.visibility = View.GONE
                 }
             }
-
-        }
-        adapter._onItemClick = { type, meal ->
-            viewModel.getMealById(meal.idMeal)
-            viewModel.mealItem.observe(viewLifecycleOwner) {
+            adapter._onItemClick = { type, meal ->
+//            viewModel.getMealById(meal.idMeal)
+//
+//            viewModel.mealItem.observe(viewLifecycleOwner) {
                 when (type) {
                     0 -> {
-                        Log.d("MealsFragmentClickRoot", it.strMeal ?: "null")
-                        navigateToFragmentDetail(it)
+                        navigateToFragmentDetail(meal)
                     }
-                    1 -> {
-                        Log.d("MealsFragmentClickLike", it.strMeal ?: "null")
-                        viewModel.insertMeal(it)
-                    }
+                    1 -> viewModel.insertMeal(meal)
 
-                    2 -> {
-                        viewModel.deleteMeal(it)
-                    }
+                    2 -> viewModel.deleteMeal(meal)
                 }
+//                Log.d("NhanNTT55", it.strMeal ?: "null")
+
+//            }
             }
         }
+
         viewModel.meal.observe(viewLifecycleOwner) {
             binding.tvMealName.text = it.strMeal
             Picasso.get().load(it.strMealThumb?.toUri()).into(binding.imgMeal)

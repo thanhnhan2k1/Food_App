@@ -31,10 +31,6 @@ class MealViewModel(
     private var _meal = MutableLiveData<MealModel>()
     val meal: LiveData<MealModel>
         get() = _meal
-    private var _mealItem = MutableLiveData<MealModel>()
-    val mealItem: LiveData<MealModel>
-        get() = _mealItem
-
 
     private var _listFilterMeals = MutableLiveData<List<MealModel>?>()
     val listFilterMeals: LiveData<List<MealModel>?>
@@ -71,7 +67,12 @@ class MealViewModel(
             _listCategories.value?.get(position)?.strCategory?.let {
                 MealApi().fetchMeals(it).collect {
                     withContext(Dispatchers.Main) {
-                        _list10Meals.value = it.toMealsModel().meals
+                        val listMeals = it.toMealsModel().meals
+                        val list = mutableListOf<MealModel>()
+                        for(item in listMeals) MealApi().fetchMealById(item.idMeal).collect {
+                            list.add(it.toMealsModel().meals[0])
+                        }
+                        _list10Meals.value = list
                     }
                 }
             }
@@ -82,28 +83,6 @@ class MealViewModel(
         return _meal.value
     }
 
-//    fun getMealById(id: Int): Flow<MealModel> = database.getMealById(id)
-//        .catch {
-//            Log.d("Database", "No meal found!")
-//
-//        }
-
-    fun getMealById(id: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            MealApi().fetchMealById(id).collect {
-                withContext(Dispatchers.Main) {
-                    _mealItem.value = it.toMealsModel().meals[0]
-
-                }
-            }
-        }
-//        return _mealItem.value
-    }
-
-//    fun getMealItem(name: String): Meal? {
-//        getMealByName(name)
-//        return _mealItem.value
-//    }
 
     private suspend fun getRandomMeal() {
         MealApi().fetchRandomMeal().collect {
@@ -112,11 +91,7 @@ class MealViewModel(
             }
         }
     }
-//    fun setMealItem(meal: MealModel){
-//        viewModelScope.launch(Dispatchers.Main){
-//            _mealItem.value = meal
-//        }
-//    }
+
     fun insertMeal(meal: MealModel) {
         viewModelScope.launch(Dispatchers.IO) {
             meal.isLike = true
