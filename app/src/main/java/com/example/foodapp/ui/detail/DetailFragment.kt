@@ -13,7 +13,6 @@ import com.example.foodapp.R
 import com.example.foodapp.data.room.FoodDatabase
 import com.example.foodapp.adapter.IngredientRecycleView
 import com.example.foodapp.databinding.FragmentDetailBinding
-import com.example.foodapp.data.room.MealRepository
 import com.example.foodapp.ui.meal.MealViewModel
 import com.example.foodapp.ui.meal.MealViewModelFactory
 import com.squareup.picasso.Picasso
@@ -39,8 +38,7 @@ class DetailFragment : Fragment() {
 
         val application = requireNotNull(this.activity).application
         val dataSource = FoodDatabase.getDatabase(application).mealDAO()
-        val repository = MealRepository(dataSource)
-        val viewModelFactory = MealViewModelFactory(dataSource, repository, application)
+        val viewModelFactory = MealViewModelFactory(dataSource, application)
         val viewModel = ViewModelProvider(this, viewModelFactory)[MealViewModel::class.java]
         if(meal.isLike){
             binding.tvAddToMyList.visibility = View.INVISIBLE

@@ -2,7 +2,6 @@ package com.example.foodapp.ui.meal
 
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -13,11 +12,9 @@ import androidx.annotation.RequiresApi
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.RecyclerView
 import com.example.foodapp.data.room.FoodDatabase
 import com.example.foodapp.R
 import com.example.foodapp.adapter.MealRecycleView
-import com.example.foodapp.data.room.MealRepository
 import com.example.foodapp.databinding.FragmentListMealsBinding
 import com.example.foodapp.model.MealModel
 import com.example.foodapp.ui.*
@@ -52,14 +49,13 @@ class ListMealsFragment : Fragment() {
 
         val application = requireNotNull(this.activity).application
         val dataSource = FoodDatabase.getDatabase(application).mealDAO()
-        val repository = MealRepository(dataSource)
-        val viewModelFactory = MealViewModelFactory(dataSource, repository, application)
+        val viewModelFactory = MealViewModelFactory(dataSource, application)
         val viewModel = ViewModelProvider(this, viewModelFactory)[MealViewModel::class.java]
 
         val adapter = MealRecycleView()
 
         binding.rvListRecentMeals.adapter = adapter
-        handleSuccessMeal(binding.rvListRecentMeals)
+//        handleSuccessMeal(binding.rvListRecentMeals)
 
         viewModel.list10Meals.observe(viewLifecycleOwner) {
             when (it.isNullOrEmpty()) {
@@ -67,34 +63,33 @@ class ListMealsFragment : Fragment() {
                     Toast.makeText(context, "Get data fail!", Toast.LENGTH_SHORT).show()
                 }
                 false -> {
-//                    Log.d("ListMealFragment", "List: ${it.size}")
                     binding.btnSeeAll.visibility = View.VISIBLE
                     adapter.setData(it)
-                    adapter._onItemClick = { type, meal ->
-                        viewModel.getMealById(meal.idMeal)
-                        viewModel.mealItem.observe(viewLifecycleOwner){
-                            when (type) {
-                                0 -> {
-                                    navigateToFragmentDetail(it)
-                                }
-                                1 -> {
-                                    viewModel.insertMeal(it)
-
-                                }
-
-                                2 -> {
-                                    viewModel.deleteMeal(it)
-                                }
-                            }
-                        }
-                    }
-//                    }
+                    shimmerFrameLayout.stopShimmerAnimation()
+                    shimmerFrameLayout.visibility = View.GONE
                 }
             }
-//            shimmerFrameLayout.stopShimmerAnimation()
-//            shimmerFrameLayout.visibility = View.GONE
-        }
 
+        }
+        adapter._onItemClick = { type, meal ->
+            viewModel.getMealById(meal.idMeal)
+            viewModel.mealItem.observe(viewLifecycleOwner) {
+                when (type) {
+                    0 -> {
+                        Log.d("MealsFragmentClickRoot", it.strMeal ?: "null")
+                        navigateToFragmentDetail(it)
+                    }
+                    1 -> {
+                        Log.d("MealsFragmentClickLike", it.strMeal ?: "null")
+                        viewModel.insertMeal(it)
+                    }
+
+                    2 -> {
+                        viewModel.deleteMeal(it)
+                    }
+                }
+            }
+        }
         viewModel.meal.observe(viewLifecycleOwner) {
             binding.tvMealName.text = it.strMeal
             Picasso.get().load(it.strMealThumb?.toUri()).into(binding.imgMeal)
@@ -117,13 +112,9 @@ class ListMealsFragment : Fragment() {
         return binding.root
     }
 
-    private fun navigateToFragmentDetail(meal: MealModel?) {
-        val action = meal?.let { it1 ->
-            ListMealsFragmentDirections.actionFragmentHomeToFragmentDetail(
-                it1
-            )
-        }
-        action?.let { it1 -> findNavController().navigate(it1) }
+    private fun navigateToFragmentDetail(meal: MealModel) {
+        val action = ListMealsFragmentDirections.actionFragmentHomeToFragmentDetail(meal)
+        findNavController().navigate(action)
     }
 
     override fun onPause() {
@@ -136,14 +127,14 @@ class ListMealsFragment : Fragment() {
         shimmerFrameLayout.startShimmerAnimation()
     }
 
-    private fun handleSuccessMeal(rv: RecyclerView) {
-        rv.visibility = View.INVISIBLE
-        shimmerFrameLayout.startShimmerAnimation()
-        Handler().postDelayed({
-            shimmerFrameLayout.stopShimmerAnimation()
-            shimmerFrameLayout.visibility = View.GONE
-            rv.visibility = View.VISIBLE
-        }, 2000)
-
-    }
+//    private fun handleSuccessMeal(rv: RecyclerView) {
+//        rv.visibility = View.INVISIBLE
+//        shimmerFrameLayout.startShimmerAnimation()
+//        Handler().postDelayed({
+//            shimmerFrameLayout.stopShimmerAnimation()
+//            shimmerFrameLayout.visibility = View.GONE
+//            rv.visibility = View.VISIBLE
+//        }, 2000)
+//
+//    }
 }

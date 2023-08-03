@@ -7,10 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.foodapp.data.retrofit.MealApi
-import com.example.foodapp.data.entity.Category
-import com.example.foodapp.data.entity.Meal
 import com.example.foodapp.data.room.MealDAO
-import com.example.foodapp.data.room.MealRepository
 import com.example.foodapp.model.CategoryModel
 import com.example.foodapp.model.MealModel
 import com.example.foodapp.model.toCatogoriesModel
@@ -18,12 +15,9 @@ import com.example.foodapp.model.toMealsModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.flow
 
 class MealViewModel(
     private var database: MealDAO,
-    private val repository: MealRepository,
     application: Application
 ) :
     AndroidViewModel(application) {
@@ -77,13 +71,11 @@ class MealViewModel(
             _listCategories.value?.get(position)?.strCategory?.let {
                 MealApi().fetchMeals(it).collect {
                     withContext(Dispatchers.Main) {
-                        Log.d("NhanNTT55", it.meals.toString())
                         _list10Meals.value = it.toMealsModel().meals
                     }
                 }
             }
         }
-        Log.d("NhanNTT55", _list10Meals.value.toString())
     }
 
     fun getCurrentMeal(): MealModel? {
@@ -100,7 +92,6 @@ class MealViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             MealApi().fetchMealById(id).collect {
                 withContext(Dispatchers.Main) {
-                    Log.d("ViewModel", it.toMealsModel().meals[0].toString())
                     _mealItem.value = it.toMealsModel().meals[0]
 
                 }
@@ -118,28 +109,18 @@ class MealViewModel(
         MealApi().fetchRandomMeal().collect {
             withContext(Dispatchers.Main) {
                 _meal.value = it.toMealsModel().meals[0]
-//                Log.i("MealViewModel", _meal.value?.strMealThumb.toString())
             }
         }
     }
-
-//    private fun getMealByName(name: String) {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            MealApi().fetchMealByName(name).collect {
-//                withContext(Dispatchers.Main) {
-//                    _mealItem.value = it.meals?.get(0)
-//                }
-//            }
+//    fun setMealItem(meal: MealModel){
+//        viewModelScope.launch(Dispatchers.Main){
+//            _mealItem.value = meal
 //        }
 //    }
-
     fun insertMeal(meal: MealModel) {
         viewModelScope.launch(Dispatchers.IO) {
             meal.isLike = true
             database.insertMeal(meal)
-            withContext(Dispatchers.Main) {
-                _mealItem.value = meal
-            }
             this@MealViewModel.getListFavoriteMeals()
         }
     }

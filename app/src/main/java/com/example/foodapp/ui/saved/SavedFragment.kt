@@ -1,7 +1,6 @@
 package com.example.foodapp.ui.saved
 
 import android.os.Bundle
-import android.os.Handler
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,12 +9,9 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.coroutineScope
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.RecyclerView
 import com.example.foodapp.data.room.FoodDatabase
 import com.example.foodapp.R
 import com.example.foodapp.adapter.MealRecycleView
-import com.example.foodapp.data.entity.Meal
-import com.example.foodapp.data.room.MealRepository
 import com.example.foodapp.databinding.FragmentSavedBinding
 import com.example.foodapp.model.MealModel
 import com.example.foodapp.ui.meal.MealViewModel
@@ -34,38 +30,31 @@ class SavedFragment : Fragment() {
 
         val application = requireNotNull(this.activity).application
         val dataSource = FoodDatabase.getDatabase(application).mealDAO()
-        val repository = MealRepository(dataSource)
-        val viewModelFactory = MealViewModelFactory(dataSource, repository, application)
+        val viewModelFactory = MealViewModelFactory(dataSource, application)
         val viewModel = ViewModelProvider(this, viewModelFactory)[MealViewModel::class.java]
 
         val adapter = MealRecycleView()
         shimmerFrameLayout = binding.shimmerViewContainer
-        shimmerFrameLayout.startShimmerAnimation()
         binding.rvListMeals.adapter = adapter
-        handleSuccessMeal(binding.rvListMeals)
         lifecycle.coroutineScope.launch {
             viewModel.getListFavoriteMeals().collect {
                 if (it.isEmpty()) {
                     Toast.makeText(context, "No data found!", Toast.LENGTH_SHORT).show()
                 }
-
-                adapter.setData(it)
-                adapter._onItemClick = { type, meal ->
-                    when (type) {
-                        0 -> {
-                            navigateToFragmentDetail(meal)
+                else{
+                    adapter.setData(it)
+                    adapter._onItemClick = { type, meal ->
+                        when (type) {
+                            0 -> {
+                                navigateToFragmentDetail(meal)
+                            }
+                            1 -> viewModel.insertMeal(meal)
+                            2 -> viewModel.deleteMeal(meal)
                         }
-                        1 -> viewModel.insertMeal(meal)
-                        2 -> viewModel.deleteMeal(meal)
                     }
+                    shimmerFrameLayout.stopShimmerAnimation()
+                    shimmerFrameLayout.visibility = View.GONE
                 }
-//                shimmerFrameLayout.stopShimmerAnimation()
-//                shimmerFrameLayout.visibility = View.GONE
-//                adapter._setView = { type ->
-//                    when (type) {
-//                        0 -> Log.d("SavedFragment", "Set list favorite view")
-//                    }
-//                }
             }
         }
 
@@ -76,25 +65,14 @@ class SavedFragment : Fragment() {
         return binding.root
     }
 
-    private fun handleSuccessMeal(rv: RecyclerView) {
-        rv.visibility = View.INVISIBLE
-        shimmerFrameLayout.startShimmerAnimation()
-        Handler().postDelayed({
-            shimmerFrameLayout.stopShimmerAnimation()
-            shimmerFrameLayout.visibility = View.GONE
-            rv.visibility = View.VISIBLE
-        }, 2000)
-
-    }
-
     override fun onPause() {
-        super.onPause()
         shimmerFrameLayout.stopShimmerAnimation()
+        super.onPause()
     }
 
     override fun onResume() {
-        shimmerFrameLayout.startShimmerAnimation()
         super.onResume()
+        shimmerFrameLayout.startShimmerAnimation()
     }
 
     private fun navigateToFragmentDetail(meal: MealModel?) {
