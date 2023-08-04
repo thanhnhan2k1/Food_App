@@ -128,4 +128,12 @@ class MealViewModel(
         }
     }
 
+    fun getMealByName(name : String){
+        viewModelScope.launch(Dispatchers.IO){
+            MealApi().fetchMealByName(name).collect{
+                _listFilterMeals.postValue(it.toMealsModel().meals)
+            }
+        }
+    }
+
 }

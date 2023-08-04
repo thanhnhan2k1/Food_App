@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
+import androidx.compose.ui.text.toLowerCase
+import androidx.compose.ui.text.toUpperCase
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -14,6 +16,7 @@ import com.example.foodapp.adapter.MealRecycleView
 import com.example.foodapp.databinding.FragmentSearchBinding
 import com.example.foodapp.ui.meal.MealViewModel
 import com.example.foodapp.ui.meal.MealViewModelFactory
+import java.util.*
 
 class SearchFragment : Fragment() {
     private lateinit var viewModel: MealViewModel
@@ -44,8 +47,11 @@ class SearchFragment : Fragment() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                if (!newText.isNullOrBlank() && newText.length == 1) {
-                    viewModel.getListMealsByFirstLetter(newText)
+                if (!newText.isNullOrEmpty()) {
+                    when(newText.length){
+                        1 -> viewModel.getListMealsByFirstLetter(newText)
+                        else -> viewModel.getMealByName(newText)
+                    }
                 } else {
                     adapter.setData(emptyList())
                 }

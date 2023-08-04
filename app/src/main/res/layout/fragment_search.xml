@@ -11,6 +11,7 @@
         android:id="@+id/search_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:inputType="textCapWords"
         android:layout_marginHorizontal="10dp"
         android:layout_marginTop="30dp"
         android:background="@drawable/button_solid"
