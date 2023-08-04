@@ -1,13 +1,12 @@
 package com.example.foodapp.ui.meal
 
-import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -16,17 +15,14 @@ import com.example.foodapp.R
 import com.example.foodapp.adapter.MealRecycleView
 import com.example.foodapp.databinding.FragmentListMealsBinding
 import com.example.foodapp.model.MealModel
-import com.example.foodapp.ui.*
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.squareup.picasso.Picasso
-import java.time.DayOfWeek
-import java.time.Month
+import java.text.SimpleDateFormat
 import java.util.*
 
 class ListMealsFragment : Fragment() {
     private lateinit var shimmerFrameLayout: ShimmerFrameLayout
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -35,20 +31,13 @@ class ListMealsFragment : Fragment() {
         val binding = FragmentListMealsBinding.inflate(inflater, container, false)
         shimmerFrameLayout = binding.shimmerViewContainer
 
-        val calender = Calendar.getInstance()
-        //val time = LocalDate.now()
-        var day = DayOfWeek.of(calender.get(Calendar.DAY_OF_WEEK).minus(1)).name
-        day = day.substring(0, 1) + day.substring(1).lowercase()
-        var month = Month.of(calender.get(Calendar.MONTH)).name
-        month = month.substring(0, 1) + month.substring(1).lowercase()
-        val date = "$day - $month, " + calender.get(
-            Calendar.DAY_OF_MONTH
-        ) + " " + calender.get(Calendar.YEAR)
-        binding.tvDate.text = date
+        val now = Calendar.getInstance().time
+        val formatter = SimpleDateFormat("EEEE - MMMM, dd yyyy", Locale.US).format(now)
+        binding.tvDate.text = formatter
 
         val application = requireNotNull(this.activity).application
         val dataSource = FoodDatabase.getDatabase(application).mealDAO()
-        val viewModelFactory = MealViewModelFactory(dataSource, application)
+        val viewModelFactory = MealViewModelFactory(dataSource)
         val viewModel = ViewModelProvider(this, viewModelFactory)[MealViewModel::class.java]
 
         val adapter = MealRecycleView()
@@ -60,8 +49,10 @@ class ListMealsFragment : Fragment() {
             when (it.isNullOrEmpty()) {
                 true -> {
                     Toast.makeText(context, "Get data fail!", Toast.LENGTH_SHORT).show()
+                    adapter.setData(emptyList())
                     shimmerFrameLayout.stopShimmerAnimation()
                     shimmerFrameLayout.visibility = View.GONE
+
                 }
                 false -> {
                     binding.btnSeeAll.visibility = View.VISIBLE
@@ -102,6 +93,16 @@ class ListMealsFragment : Fragment() {
                     findNavController().navigate(action)
                 }
             }
+        }
+
+        binding.swiperRefresh.setOnRefreshListener {
+            Log.d("List Meals Fragment", "onRefresh called from SwiperRefresh")
+            shimmerFrameLayout.startShimmerAnimation()
+            shimmerFrameLayout.visibility = View.VISIBLE
+            adapter.setData(emptyList())
+            binding.btnSeeAll.visibility = View.INVISIBLE
+            binding.swiperRefresh.isRefreshing = false
+            viewModel.reloadMealsFromAPI()
         }
 
         binding.imvSearch.setOnClickListener {

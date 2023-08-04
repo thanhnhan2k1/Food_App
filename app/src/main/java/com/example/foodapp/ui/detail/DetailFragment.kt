@@ -38,7 +38,7 @@ class DetailFragment : Fragment() {
 
         val application = requireNotNull(this.activity).application
         val dataSource = FoodDatabase.getDatabase(application).mealDAO()
-        val viewModelFactory = MealViewModelFactory(dataSource, application)
+        val viewModelFactory = MealViewModelFactory(dataSource)
         val viewModel = ViewModelProvider(this, viewModelFactory)[MealViewModel::class.java]
         if(meal.isLike){
             binding.tvAddToMyList.visibility = View.INVISIBLE

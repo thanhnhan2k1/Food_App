@@ -1,11 +1,7 @@
 package com.example.foodapp.ui.meal
 
-import android.app.Application
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.foodapp.data.retrofit.MealApi
 import com.example.foodapp.data.room.MealDAO
 import com.example.foodapp.model.CategoryModel
@@ -18,9 +14,8 @@ import kotlinx.coroutines.flow.catch
 
 class MealViewModel(
     private var database: MealDAO,
-    application: Application
 ) :
-    AndroidViewModel(application) {
+    ViewModel() {
 
     private var _list10Meals = MutableLiveData<List<MealModel>?>()
     val list10Meals: LiveData<List<MealModel>?>
@@ -45,6 +40,11 @@ class MealViewModel(
             getAllMeals()
             getRandomMeal()
             getListFavoriteMeals()
+        }
+    }
+    fun reloadMealsFromAPI(){
+        viewModelScope.launch(Dispatchers.IO){
+            getAllMeals()
         }
     }
 

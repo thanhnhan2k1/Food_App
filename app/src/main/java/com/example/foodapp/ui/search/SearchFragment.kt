@@ -16,7 +16,10 @@ import com.example.foodapp.ui.meal.MealViewModel
 import com.example.foodapp.ui.meal.MealViewModelFactory
 
 class SearchFragment : Fragment() {
-
+    private lateinit var viewModel: MealViewModel
+    private val adapter by lazy {
+        MealRecycleView()
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -27,12 +30,12 @@ class SearchFragment : Fragment() {
 
         val application = requireNotNull(this.activity).application
         val dataSource = FoodDatabase.getDatabase(application).mealDAO()
-        val viewModelFactory = MealViewModelFactory(dataSource, application)
-        val viewModel = ViewModelProvider(this, viewModelFactory)[MealViewModel::class.java]
+        val viewModelFactory = MealViewModelFactory(dataSource)
 
-        val adapter = MealRecycleView()
+        viewModel = ViewModelProvider(this, viewModelFactory)[MealViewModel::class.java]
+
         binding.rvListMeals.adapter = adapter
-        initObserver(viewModel, adapter)
+        initObserver()
 
         binding.searchView.setOnQueryTextListener(object :
             SearchView.OnQueryTextListener {
@@ -53,7 +56,12 @@ class SearchFragment : Fragment() {
         return binding.root
     }
 
-    private fun initObserver(viewModel: MealViewModel, adapter: MealRecycleView) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+    }
+
+    private fun initObserver() {
         viewModel.listFilterMeals.observe(viewLifecycleOwner) {
             it?.let { it1 ->
                 adapter.setData(it1)
