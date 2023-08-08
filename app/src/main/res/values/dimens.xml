@@ -20,4 +20,23 @@
     <dimen name="tv_date_margin_top">10dp</dimen>
     <dimen name="bt_make_it_now_margin_top">-30dp</dimen>
     <dimen name="bt_make_it_now_padding_horizontal">20dp</dimen>
+    <dimen name="margin_vertical">20dp</dimen>
+    <dimen name="margin_bottom">20dp</dimen>
+    <dimen name="rv_list_meal_margin_horizontal">10dp</dimen>
+    <dimen name="rv_list_meal_margin_vertical">10dp</dimen>
+    <dimen name="search_view_margin_top">30dp</dimen>
+    <dimen name="tv_unit_margin_horizontal">5dp</dimen>
+    <dimen name="img_meal_item_width">80dp</dimen>
+    <dimen name="img_meal_item_height">80dp</dimen>
+    <dimen name="tv_meal_name_margin_top">10dp</dimen>
+    <dimen name="tv_meal_name_margin_horizontal">10dp</dimen>
+    <dimen name="img_heart_margin_horizontal">10dp</dimen>
+    <dimen name="img_heart_margin_top">5dp</dimen>
+    <dimen name="img_heart_min_width">50dp</dimen>
+    <dimen name="img_heart_min_height">50dp</dimen>
+    <dimen name="tv_time_margin_top">10dp</dimen>
+    <dimen name="tv_time_margin_horizontal">10dp</dimen>
+    <dimen name="tv_description_margin_top">10dp</dimen>
+    <dimen name="tv_description_margin_bottom">10dp</dimen>
+    <dimen name="tv_description_margin_horizontal">10dp</dimen>
 </resources>

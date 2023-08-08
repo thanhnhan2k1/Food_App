@@ -16,8 +16,8 @@
         android:layout_height="wrap_content"
         android:text="@string/unit"
         android:layout_weight="1"
-        android:gravity="right"
+        android:gravity="end"
         android:textColor="@color/preto_40"
-        android:layout_marginHorizontal="5dp"
+        android:layout_marginHorizontal="@dimen/tv_unit_margin_horizontal"
         android:id="@+id/tvUnit"/>
 </LinearLayout>

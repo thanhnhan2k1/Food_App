@@ -23,6 +23,8 @@ class MealViewModel(
         get() = _list10Meals
 
     private var _listCategories = MutableLiveData<List<CategoryModel>?>()
+    val listCategories: LiveData<List<CategoryModel>?>
+        get() = _listCategories
 
     private var _meal = MutableLiveData<MealModel>()
     val meal: LiveData<MealModel>
@@ -39,7 +41,6 @@ class MealViewModel(
     private fun initListMeal() {
         viewModelScope.launch(Dispatchers.IO) {
             getAllCategories()
-            getAllMeals()
             getRandomMeal()
             getListFavoriteMeals()
         }
@@ -56,20 +57,10 @@ class MealViewModel(
         }
     }
 
-    private suspend fun getAllMeals() {
-        if (_listCategories.value?.isEmpty() == true) {
-            MealRepository.fetchMeals("Seafood").collect {
-                val listMeals = it.toMealsModel().meals
-                val list = mutableListOf<MealModel>()
-                for (item in listMeals) MealRepository.fetchMealById(item.idMeal).collect {
-                    list.add(it.toMealsModel().meals[0])
-                }
-                _list10Meals.postValue(list)
-            }
-        } else {
-            val position = (0..(_listCategories.value?.size?.minus(1) ?: 0)).random()
-            _listCategories.value?.get(position)?.strCategory?.let {
-                MealRepository.fetchMeals(it).collect {
+    fun getAllMeals() {
+        viewModelScope.launch(Dispatchers.IO){
+            if (_listCategories.value?.isEmpty() == true) {
+                MealRepository.fetchMeals("Seafood").collect { it ->
                     val listMeals = it.toMealsModel().meals
                     val list = mutableListOf<MealModel>()
                     for (item in listMeals) MealRepository.fetchMealById(item.idMeal).collect {
@@ -77,8 +68,21 @@ class MealViewModel(
                     }
                     _list10Meals.postValue(list)
                 }
+            } else {
+                val position = (0..(_listCategories.value?.size?.minus(1) ?: 0)).random()
+                _listCategories.value?.get(position)?.strCategory?.let { it ->
+                    MealRepository.fetchMeals(it).collect { m ->
+                        val listMeals = m.toMealsModel().meals
+                        val list = mutableListOf<MealModel>()
+                        for (item in listMeals) MealRepository.fetchMealById(item.idMeal).collect {
+                            list.add(it.toMealsModel().meals[0])
+                        }
+                        _list10Meals.postValue(list)
+                    }
+                }
             }
         }
+
     }
 
     fun getCurrentMeal(): MealModel? {

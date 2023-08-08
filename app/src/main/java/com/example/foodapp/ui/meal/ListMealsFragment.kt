@@ -49,8 +49,9 @@ class ListMealsFragment : Fragment() {
         val adapter = MealRecycleView()
 
         binding.rvListRecentMeals.adapter = adapter
-//        handleSuccessMeal(binding.rvListRecentMeals)
-
+        viewModel.listCategories.observe(viewLifecycleOwner){
+            viewModel.getAllMeals()
+        }
         viewModel.list10Meals.observe(viewLifecycleOwner) {
             when (it.isNullOrEmpty()) {
                 true -> {
