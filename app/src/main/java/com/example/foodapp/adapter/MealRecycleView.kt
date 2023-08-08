@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodapp.databinding.MealItemBinding
+import com.example.foodapp.model.Constants
 import com.example.foodapp.model.MealModel
 import com.squareup.picasso.Picasso
 
@@ -27,20 +28,21 @@ class MealRecycleView : RecyclerView.Adapter<MealRecycleView.MealViewHolder>() {
             binding.tvMealName.text = item.strMeal
             binding.tvTime.text = "45m"
             Picasso.get().load(item.strMealThumb?.toUri()).into(binding.img)
-            binding.root.setOnClickListener { onClick(0, item) }
+            val constants = Constants
+            binding.root.setOnClickListener { onClick(constants.rootClick, item) }
             if(item.isLike){
                 binding.btnLike.visibility = View.INVISIBLE
                 binding.btnUnLike.visibility = View.VISIBLE
             }
             binding.btnLike.setOnClickListener {
                 item.isLike = true
-                onClick(1, item)
+                onClick(constants.likeClick, item)
                 binding.btnLike.visibility = View.INVISIBLE
                 binding.btnUnLike.visibility = View.VISIBLE
             }
             binding.btnUnLike.setOnClickListener {
                 item.isLike = false
-                onClick(2, item)
+                onClick(constants.unlikeClick, item)
                 binding.btnLike.visibility = View.VISIBLE
                 binding.btnUnLike.visibility = View.INVISIBLE
             }

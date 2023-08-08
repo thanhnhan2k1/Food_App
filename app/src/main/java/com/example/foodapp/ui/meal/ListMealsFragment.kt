@@ -14,6 +14,7 @@ import com.example.foodapp.data.room.FoodDatabase
 import com.example.foodapp.R
 import com.example.foodapp.adapter.MealRecycleView
 import com.example.foodapp.databinding.FragmentListMealsBinding
+import com.example.foodapp.model.Constants
 import com.example.foodapp.model.MealModel
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.squareup.picasso.Picasso
@@ -22,15 +23,20 @@ import java.util.*
 
 class ListMealsFragment : Fragment() {
     private lateinit var shimmerFrameLayout: ShimmerFrameLayout
+    private lateinit var binding: FragmentListMealsBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        val binding = FragmentListMealsBinding.inflate(inflater, container, false)
+        binding = FragmentListMealsBinding.inflate(inflater, container, false)
         shimmerFrameLayout = binding.shimmerViewContainer
+        return binding.root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         val now = Calendar.getInstance().time
         val formatter = SimpleDateFormat("EEEE - MMMM, dd yyyy", Locale.US).format(now)
         binding.tvDate.text = formatter
@@ -61,21 +67,16 @@ class ListMealsFragment : Fragment() {
                     shimmerFrameLayout.visibility = View.GONE
                 }
             }
+            val constants = Constants
             adapter._onItemClick = { type, meal ->
-//            viewModel.getMealById(meal.idMeal)
-//
-//            viewModel.mealItem.observe(viewLifecycleOwner) {
                 when (type) {
-                    0 -> {
+                    constants.rootClick -> {
                         navigateToFragmentDetail(meal)
                     }
-                    1 -> viewModel.insertMeal(meal)
+                    constants.likeClick -> viewModel.insertMeal(meal)
 
-                    2 -> viewModel.deleteMeal(meal)
+                    constants.unlikeClick -> viewModel.deleteMeal(meal)
                 }
-//                Log.d("NhanNTT55", it.strMeal ?: "null")
-
-//            }
             }
         }
 
@@ -108,7 +109,6 @@ class ListMealsFragment : Fragment() {
         binding.imvSearch.setOnClickListener {
             findNavController().navigate(R.id.action_fragment_home_to_fragment_search)
         }
-        return binding.root
     }
 
     private fun navigateToFragmentDetail(meal: MealModel) {
@@ -126,14 +126,4 @@ class ListMealsFragment : Fragment() {
         shimmerFrameLayout.startShimmerAnimation()
     }
 
-//    private fun handleSuccessMeal(rv: RecyclerView) {
-//        rv.visibility = View.INVISIBLE
-//        shimmerFrameLayout.startShimmerAnimation()
-//        Handler().postDelayed({
-//            shimmerFrameLayout.stopShimmerAnimation()
-//            shimmerFrameLayout.visibility = View.GONE
-//            rv.visibility = View.VISIBLE
-//        }, 2000)
-//
-//    }
 }

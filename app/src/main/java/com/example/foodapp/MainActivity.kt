@@ -23,6 +23,7 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment = supportFragmentManager
             .findFragmentById(nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
+
         _binding.bottomNav.setupWithNavController(navController)
         navController.addOnDestinationChangedListener{ _, navDestination: NavDestination, _ ->
             if(navDestination.id == fragment_detail || navDestination.id == fragment_search){

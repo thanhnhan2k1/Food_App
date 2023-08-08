@@ -38,48 +38,44 @@ class MealViewModel(
 
     private fun initListMeal() {
         viewModelScope.launch(Dispatchers.IO) {
+            getAllCategories()
             getAllMeals()
             getRandomMeal()
             getListFavoriteMeals()
         }
     }
-    fun reloadMealsFromAPI(){
-        viewModelScope.launch(Dispatchers.IO){
+
+    fun reloadMealsFromAPI() {
+        viewModelScope.launch(Dispatchers.IO) {
             getAllMeals()
+        }
+    }
+    private suspend fun getAllCategories(){
+        MealRepository.fetchCategories().collect {
+            _listCategories.postValue(it.toCatogoriesModel().categories)
         }
     }
 
     private suspend fun getAllMeals() {
-        MealRepository.fetchCategories().collect {
-            withContext(Dispatchers.Main) {
-                _listCategories.value = it.toCatogoriesModel().categories
-            }
-
-        }
-
         if (_listCategories.value?.isEmpty() == true) {
             MealRepository.fetchMeals("Seafood").collect {
-                withContext(Dispatchers.Main) {
-                    val listMeals = it.toMealsModel().meals
-                    val list = mutableListOf<MealModel>()
-                    for(item in listMeals) MealRepository.fetchMealById(item.idMeal).collect {
-                        list.add(it.toMealsModel().meals[0])
-                    }
-                    _list10Meals.value = list
+                val listMeals = it.toMealsModel().meals
+                val list = mutableListOf<MealModel>()
+                for (item in listMeals) MealRepository.fetchMealById(item.idMeal).collect {
+                    list.add(it.toMealsModel().meals[0])
                 }
+                _list10Meals.postValue(list)
             }
         } else {
             val position = (0..(_listCategories.value?.size?.minus(1) ?: 0)).random()
             _listCategories.value?.get(position)?.strCategory?.let {
                 MealRepository.fetchMeals(it).collect {
-                    withContext(Dispatchers.Main) {
-                        val listMeals = it.toMealsModel().meals
-                        val list = mutableListOf<MealModel>()
-                        for(item in listMeals) MealRepository.fetchMealById(item.idMeal).collect {
-                            list.add(it.toMealsModel().meals[0])
-                        }
-                        _list10Meals.value = list
+                    val listMeals = it.toMealsModel().meals
+                    val list = mutableListOf<MealModel>()
+                    for (item in listMeals) MealRepository.fetchMealById(item.idMeal).collect {
+                        list.add(it.toMealsModel().meals[0])
                     }
+                    _list10Meals.postValue(list)
                 }
             }
         }
@@ -92,9 +88,7 @@ class MealViewModel(
 
     private suspend fun getRandomMeal() {
         MealRepository.fetchRandomMeal().collect {
-            withContext(Dispatchers.Main) {
-                _meal.value = it.toMealsModel().meals[0]
-            }
+            _meal.postValue(it.toMealsModel().meals[0])
         }
     }
 
@@ -122,16 +116,14 @@ class MealViewModel(
     fun getListMealsByFirstLetter(key: String) {
         viewModelScope.launch(Dispatchers.IO) {
             MealRepository.fetchMealsByFirstLetter(key).collect {
-                withContext(Dispatchers.Main) {
-                    _listFilterMeals.value = it.toMealsModel().meals
-                }
+                _listFilterMeals.postValue(it.toMealsModel().meals)
             }
         }
     }
 
-    fun getMealByName(name : String){
-        viewModelScope.launch(Dispatchers.IO){
-            MealRepository.fetchMealByName(name).collect{
+    fun getMealByName(name: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            MealRepository.fetchMealByName(name).collect {
                 _listFilterMeals.postValue(it.toMealsModel().meals)
             }
         }

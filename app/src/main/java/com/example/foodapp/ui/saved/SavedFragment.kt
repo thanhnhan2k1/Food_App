@@ -21,13 +21,18 @@ import kotlinx.coroutines.launch
 
 class SavedFragment : Fragment() {
     private lateinit var shimmerFrameLayout: ShimmerFrameLayout
+    private lateinit var binding: FragmentSavedBinding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        val binding = FragmentSavedBinding.inflate(inflater, container, false)
+        binding = FragmentSavedBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         val application = requireNotNull(this.activity).application
         val dataSource = FoodDatabase.getDatabase(application).mealDAO()
         val viewModelFactory = MealViewModelFactory(dataSource)
@@ -64,8 +69,6 @@ class SavedFragment : Fragment() {
         binding.search.setOnClickListener {
             findNavController().navigate(R.id.action_fragment_saved_to_fragment_search)
         }
-
-        return binding.root
     }
 
     override fun onPause() {
