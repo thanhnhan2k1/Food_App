@@ -1,15 +1,13 @@
-package com.example.foodapp.adapter
+package com.example.foodapp.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodapp.databinding.IngredientItemBinding
 import com.example.foodapp.data.entity.Ingredient
-import com.example.foodapp.data.entity.Meal
-import com.example.foodapp.model.MealModel
 
-class IngredientRecycleView(private val meal: MealModel) :
-    RecyclerView.Adapter<IngredientRecycleView.IngredientViewHolder>() {
+class IngredientAdapter :
+    RecyclerView.Adapter<IngredientAdapter.IngredientViewHolder>() {
     private val listIngredient = mutableListOf<Ingredient>()
 
     fun setData(list: List<Ingredient>){

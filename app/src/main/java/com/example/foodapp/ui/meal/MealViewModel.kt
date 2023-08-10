@@ -4,19 +4,14 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.example.foodapp.data.retrofit.MealRepository
 import com.example.foodapp.data.room.MealDAO
-import com.example.foodapp.model.CategoryModel
-import com.example.foodapp.model.MealModel
-import com.example.foodapp.model.toCatogoriesModel
-import com.example.foodapp.model.toMealsModel
+import com.example.foodapp.model.*
+import com.example.foodapp.model.Mapper.toCatogoriesModel
+import com.example.foodapp.model.Mapper.toMealsModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 
-class MealViewModel(
-    private var database: MealDAO,
-) :
-    ViewModel() {
-
+class MealViewModel(private val database: MealDAO): ViewModel() {
 
     private var _list10Meals = MutableLiveData<List<MealModel>?>()
     val list10Meals: LiveData<List<MealModel>?>

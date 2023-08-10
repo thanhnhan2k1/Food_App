@@ -1,8 +1,9 @@
-package com.example.foodapp.adapter
+package com.example.foodapp.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.ui.res.stringResource
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodapp.databinding.MealItemBinding
@@ -10,10 +11,10 @@ import com.example.foodapp.model.Constants
 import com.example.foodapp.model.MealModel
 import com.squareup.picasso.Picasso
 
-class MealRecycleView : RecyclerView.Adapter<MealRecycleView.MealViewHolder>() {
+class MealAdapter : RecyclerView.Adapter<MealAdapter.MealViewHolder>() {
     private val listMeals = mutableListOf<MealModel>()
 
-    var _onItemClick: ((Int, MealModel) -> Unit) = { _, _ ->
+    var onItemClick: ((Int, MealModel) -> Unit) = { _, _ ->
     }
 
 
@@ -25,24 +26,33 @@ class MealRecycleView : RecyclerView.Adapter<MealRecycleView.MealViewHolder>() {
 
     class MealViewHolder(private val binding: MealItemBinding): RecyclerView.ViewHolder(binding.root){
         fun bind(item: MealModel, onClick: (Int, MealModel) -> Unit){
+            val constants = Constants
+
             binding.tvMealName.text = item.strMeal
             binding.tvTime.text = "45m"
             Picasso.get().load(item.strMealThumb?.toUri()).into(binding.img)
-            val constants = Constants
-            binding.root.setOnClickListener { onClick(constants.rootClick, item) }
+
+            binding.root.setOnClickListener { onClick(constants.ROOT_CLICK, item) }
+
             if(item.isLike){
                 binding.btnLike.visibility = View.INVISIBLE
                 binding.btnUnLike.visibility = View.VISIBLE
             }
+            else{
+                binding.btnLike.visibility = View.VISIBLE
+                binding.btnUnLike.visibility = View.INVISIBLE
+            }
+
             binding.btnLike.setOnClickListener {
                 item.isLike = true
-                onClick(constants.likeClick, item)
+                onClick(constants.LIKE_CLICK, item)
                 binding.btnLike.visibility = View.INVISIBLE
                 binding.btnUnLike.visibility = View.VISIBLE
             }
+
             binding.btnUnLike.setOnClickListener {
                 item.isLike = false
-                onClick(constants.unlikeClick, item)
+                onClick(constants.UNLIKE_CLICK, item)
                 binding.btnLike.visibility = View.VISIBLE
                 binding.btnUnLike.visibility = View.INVISIBLE
             }
@@ -57,6 +67,6 @@ class MealRecycleView : RecyclerView.Adapter<MealRecycleView.MealViewHolder>() {
     override fun getItemCount(): Int = listMeals.size
 
     override fun onBindViewHolder(holder: MealViewHolder, position: Int) {
-        holder.bind(listMeals[position], _onItemClick)
+        holder.bind(listMeals[position], onItemClick)
     }
 }

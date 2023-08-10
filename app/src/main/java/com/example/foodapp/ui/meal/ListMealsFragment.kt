@@ -10,9 +10,8 @@ import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.example.foodapp.data.room.FoodDatabase
 import com.example.foodapp.R
-import com.example.foodapp.adapter.MealRecycleView
+import com.example.foodapp.ui.adapter.MealAdapter
 import com.example.foodapp.databinding.FragmentListMealsBinding
 import com.example.foodapp.model.Constants
 import com.example.foodapp.model.MealModel
@@ -39,73 +38,75 @@ class ListMealsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val now = Calendar.getInstance().time
         val formatter = SimpleDateFormat("EEEE - MMMM, dd yyyy", Locale.US).format(now)
-        binding.tvDate.text = formatter
+        val constants = Constants
+        val adapter = MealAdapter()
 
-        val application = requireNotNull(this.activity).application
-        val dataSource = FoodDatabase.getDatabase(application).mealDAO()
-        val viewModelFactory = MealViewModelFactory(dataSource)
-        val viewModel = ViewModelProvider(this, viewModelFactory)[MealViewModel::class.java]
-
-        val adapter = MealRecycleView()
-
-        binding.rvListRecentMeals.adapter = adapter
-        viewModel.listCategories.observe(viewLifecycleOwner){
-            viewModel.getAllMeals()
-        }
-        viewModel.list10Meals.observe(viewLifecycleOwner) {
-            when (it.isNullOrEmpty()) {
-                true -> {
-                    Toast.makeText(context, "Get data fail!", Toast.LENGTH_SHORT).show()
-                    adapter.setData(emptyList())
-                    shimmerFrameLayout.stopShimmerAnimation()
-                    shimmerFrameLayout.visibility = View.GONE
-
-                }
-                false -> {
-                    binding.btnSeeAll.visibility = View.VISIBLE
-                    adapter.setData(it)
-                    shimmerFrameLayout.stopShimmerAnimation()
-                    shimmerFrameLayout.visibility = View.GONE
-                }
+        context?.let {
+            val viewModelFactory = MealViewModelFactory(constants.getDatasource(it))
+            val viewModel = ViewModelProvider(this, viewModelFactory)[MealViewModel::class.java]
+            viewModel.listCategories.observe(viewLifecycleOwner){
+                viewModel.getAllMeals()
             }
-            val constants = Constants
-            adapter._onItemClick = { type, meal ->
-                when (type) {
-                    constants.rootClick -> {
-                        navigateToFragmentDetail(meal)
+            viewModel.list10Meals.observe(viewLifecycleOwner) { list ->
+                when (list.isNullOrEmpty()) {
+                    true -> {
+                        Toast.makeText(context, "Get data fail!", Toast.LENGTH_SHORT).show()
+                        adapter.setData(emptyList())
+                        shimmerFrameLayout.stopShimmerAnimation()
+                        shimmerFrameLayout.visibility = View.GONE
+
                     }
-                    constants.likeClick -> viewModel.insertMeal(meal)
-
-                    constants.unlikeClick -> viewModel.deleteMeal(meal)
+                    false -> {
+                        binding.btnSeeAll.visibility = View.VISIBLE
+                        adapter.setData(list)
+                        shimmerFrameLayout.stopShimmerAnimation()
+                        shimmerFrameLayout.visibility = View.GONE
+                    }
                 }
+
+                adapter.onItemClick = { type, meal ->
+                    when (type) {
+                        constants.ROOT_CLICK -> {
+                            navigateToFragmentDetail(meal)
+                        }
+                        constants.LIKE_CLICK -> viewModel.insertMeal(meal)
+
+                        constants.UNLIKE_CLICK -> viewModel.deleteMeal(meal)
+                    }
+                }
+            }
+
+            viewModel.meal.observe(viewLifecycleOwner) {meal ->
+                binding.tvMealName.text = meal.strMeal
+                Picasso.get().load(meal.strMealThumb?.toUri()).into(binding.imgMeal)
+            }
+
+            binding.btnMakeIt.setOnClickListener {
+                when (val meal = viewModel.getCurrentMeal()) {
+                    null -> Toast.makeText(context, "No data", Toast.LENGTH_SHORT).show()
+                    else -> {
+                        val action =
+                            ListMealsFragmentDirections.actionFragmentHomeToFragmentDetail(meal)
+                        findNavController().navigate(action)
+                    }
+                }
+            }
+
+            binding.swiperRefresh.setOnRefreshListener {
+                Log.d("List Meals Fragment", "onRefresh called from SwiperRefresh")
+                shimmerFrameLayout.startShimmerAnimation()
+                shimmerFrameLayout.visibility = View.VISIBLE
+                adapter.setData(emptyList())
+                binding.btnSeeAll.visibility = View.INVISIBLE
+                binding.swiperRefresh.isRefreshing = false
+                viewModel.reloadMealsFromAPI()
             }
         }
 
-        viewModel.meal.observe(viewLifecycleOwner) {
-            binding.tvMealName.text = it.strMeal
-            Picasso.get().load(it.strMealThumb?.toUri()).into(binding.imgMeal)
-        }
 
-        binding.btnMakeIt.setOnClickListener {
-            when (val meal = viewModel.getCurrentMeal()) {
-                null -> Toast.makeText(context, "No data", Toast.LENGTH_SHORT).show()
-                else -> {
-                    val action =
-                        ListMealsFragmentDirections.actionFragmentHomeToFragmentDetail(meal)
-                    findNavController().navigate(action)
-                }
-            }
-        }
+        binding.tvDate.text = formatter
+        binding.rvListRecentMeals.adapter = adapter
 
-        binding.swiperRefresh.setOnRefreshListener {
-            Log.d("List Meals Fragment", "onRefresh called from SwiperRefresh")
-            shimmerFrameLayout.startShimmerAnimation()
-            shimmerFrameLayout.visibility = View.VISIBLE
-            adapter.setData(emptyList())
-            binding.btnSeeAll.visibility = View.INVISIBLE
-            binding.swiperRefresh.isRefreshing = false
-            viewModel.reloadMealsFromAPI()
-        }
 
         binding.imvSearch.setOnClickListener {
             findNavController().navigate(R.id.action_fragment_home_to_fragment_search)

@@ -11,7 +11,7 @@ import androidx.lifecycle.coroutineScope
 import androidx.navigation.fragment.findNavController
 import com.example.foodapp.data.room.FoodDatabase
 import com.example.foodapp.R
-import com.example.foodapp.adapter.MealRecycleView
+import com.example.foodapp.ui.adapter.MealAdapter
 import com.example.foodapp.databinding.FragmentSavedBinding
 import com.example.foodapp.model.MealModel
 import com.example.foodapp.ui.meal.MealViewModel
@@ -38,7 +38,7 @@ class SavedFragment : Fragment() {
         val viewModelFactory = MealViewModelFactory(dataSource)
         val viewModel = ViewModelProvider(this, viewModelFactory)[MealViewModel::class.java]
 
-        val adapter = MealRecycleView()
+        val adapter = MealAdapter()
         shimmerFrameLayout = binding.shimmerViewContainer
         binding.rvListMeals.adapter = adapter
         lifecycle.coroutineScope.launch {
@@ -51,7 +51,7 @@ class SavedFragment : Fragment() {
                 }
                 else{
                     adapter.setData(it)
-                    adapter._onItemClick = { type, meal ->
+                    adapter.onItemClick = { type, meal ->
                         when (type) {
                             0 -> {
                                 navigateToFragmentDetail(meal)

@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.foodapp.data.room.FoodDatabase
-import com.example.foodapp.adapter.MealRecycleView
+import com.example.foodapp.ui.adapter.MealAdapter
 import com.example.foodapp.databinding.FragmentSearchBinding
 import com.example.foodapp.ui.meal.MealViewModel
 import com.example.foodapp.ui.meal.MealViewModelFactory
@@ -18,7 +18,7 @@ import com.example.foodapp.ui.meal.MealViewModelFactory
 class SearchFragment : Fragment() {
     private lateinit var viewModel: MealViewModel
     private val adapter by lazy {
-        MealRecycleView()
+        MealAdapter()
     }
     private lateinit var binding: FragmentSearchBinding
     override fun onCreateView(
@@ -67,7 +67,7 @@ class SearchFragment : Fragment() {
         viewModel.listFilterMeals.observe(viewLifecycleOwner) {
             it?.let { it1 ->
                 adapter.setData(it1)
-                adapter._onItemClick = { type, meal ->
+                adapter.onItemClick = { type, meal ->
                     when (type) {
                         0 -> {
                             val action =
