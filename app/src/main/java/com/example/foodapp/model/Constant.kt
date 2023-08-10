@@ -4,7 +4,7 @@ import android.content.Context
 import com.example.foodapp.data.room.FoodDatabase
 import com.example.foodapp.data.room.MealDAO
 
-object Constants {
+object Constant {
     const val ROOT_CLICK = 0
     const val LIKE_CLICK = 1
     const val UNLIKE_CLICK = 2

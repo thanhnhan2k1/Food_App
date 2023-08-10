@@ -12,7 +12,7 @@ import androidx.navigation.fragment.navArgs
 import com.example.foodapp.R
 import com.example.foodapp.ui.adapter.IngredientAdapter
 import com.example.foodapp.databinding.FragmentDetailBinding
-import com.example.foodapp.model.Constants
+import com.example.foodapp.model.Constant
 import com.example.foodapp.ui.meal.MealViewModel
 import com.example.foodapp.ui.meal.MealViewModelFactory
 import com.squareup.picasso.Picasso
@@ -43,7 +43,7 @@ class DetailFragment : Fragment() {
         binding.rvListIngredients.adapter = adapter
 
         context?.let {
-            val mealViewModelFactory = MealViewModelFactory(Constants.getDatasource(it))
+            val mealViewModelFactory = MealViewModelFactory(Constant.getDatasource(it))
             val mealViewModel = ViewModelProvider(this, mealViewModelFactory)[MealViewModel::class.java]
 
             val ingredientViewModelFactory = IngredientViewModelFactory(meal)

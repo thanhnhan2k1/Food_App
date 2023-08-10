@@ -3,11 +3,10 @@ package com.example.foodapp.ui.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.ui.res.stringResource
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodapp.databinding.MealItemBinding
-import com.example.foodapp.model.Constants
+import com.example.foodapp.model.Constant
 import com.example.foodapp.model.MealModel
 import com.squareup.picasso.Picasso
 
@@ -26,7 +25,7 @@ class MealAdapter : RecyclerView.Adapter<MealAdapter.MealViewHolder>() {
 
     class MealViewHolder(private val binding: MealItemBinding): RecyclerView.ViewHolder(binding.root){
         fun bind(item: MealModel, onClick: (Int, MealModel) -> Unit){
-            val constants = Constants
+            val constants = Constant
 
             binding.tvMealName.text = item.strMeal
             binding.tvTime.text = "45m"

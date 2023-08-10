@@ -13,7 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.foodapp.R
 import com.example.foodapp.ui.adapter.MealAdapter
 import com.example.foodapp.databinding.FragmentListMealsBinding
-import com.example.foodapp.model.Constants
+import com.example.foodapp.model.Constant
 import com.example.foodapp.model.MealModel
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.squareup.picasso.Picasso
@@ -38,7 +38,7 @@ class ListMealsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val now = Calendar.getInstance().time
         val formatter = SimpleDateFormat("EEEE - MMMM, dd yyyy", Locale.US).format(now)
-        val constants = Constants
+        val constants = Constant
         val adapter = MealAdapter()
 
         context?.let {
