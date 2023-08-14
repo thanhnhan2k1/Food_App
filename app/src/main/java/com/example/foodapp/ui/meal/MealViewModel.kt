@@ -5,7 +5,7 @@ import androidx.lifecycle.*
 import com.example.foodapp.data.retrofit.MealRepository
 import com.example.foodapp.data.room.MealDAO
 import com.example.foodapp.model.*
-import com.example.foodapp.model.Mapper.toCatogoriesModel
+import com.example.foodapp.model.Mapper.toCategoriesModel
 import com.example.foodapp.model.Mapper.toMealsModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
@@ -48,7 +48,7 @@ class MealViewModel(private val database: MealDAO): ViewModel() {
     }
     private suspend fun getAllCategories(){
         MealRepository.fetchCategories().collect {
-            _listCategories.postValue(it.toCatogoriesModel().categories)
+            _listCategories.postValue(it.toCategoriesModel().categories)
         }
     }
 

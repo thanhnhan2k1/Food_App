@@ -6,21 +6,18 @@ import com.example.foodapp.data.entity.Meal
 import com.example.foodapp.data.entity.Meals
 
 object Mapper {
-    fun Categories.toCatogoriesModel(): CategoriesModel{
-        val list = mutableListOf<CategoryModel>()
-        if (categories != null) {
-            for(i in categories){
-                list.add(i.toCategoryModel())
-            }
-        }
-        return CategoriesModel(list)
+    fun Categories.toCategoriesModel(): CategoriesModel {
+
+        return CategoriesModel(categories?.map { category ->
+            category.toCategoryModel()
+        } ?: emptyList())
     }
 
-    fun Category.toCategoryModel(): CategoryModel{
+    private fun Category.toCategoryModel(): CategoryModel {
         return CategoryModel(idCategory, strCategory)
     }
 
-    fun Meal.toMealModel(): MealModel {
+    private fun Meal.toMealModel(): MealModel {
         return MealModel(
             idMeal,
             strMeal,
@@ -69,13 +66,10 @@ object Mapper {
         )
     }
 
-    fun Meals.toMealsModel(): MealsModel{
-        val list = mutableListOf<MealModel>()
-        if (meals != null) {
-            for(i in meals){
-                list.add(i.toMealModel())
-            }
-        }
-        return MealsModel(list)
+    fun Meals.toMealsModel(): MealsModel {
+
+        return MealsModel(meals?.map {meal ->
+            meal.toMealModel()
+        } ?: emptyList())
     }
 }

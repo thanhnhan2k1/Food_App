@@ -39,4 +39,12 @@
     <dimen name="tv_description_margin_top">10dp</dimen>
     <dimen name="tv_description_margin_bottom">10dp</dimen>
     <dimen name="tv_description_margin_horizontal">10dp</dimen>
+    <dimen name="_20sp">20sp</dimen>
+    <dimen name="_18sp">18sp</dimen>
+    <dimen name="_15sp">15sp</dimen>
+    <dimen name="_40dp">40dp</dimen>
+    <dimen name="_16sp">16sp</dimen>
+    <dimen name="_25sp">25sp</dimen>
+    <dimen name="_14sp">14sp</dimen>
+    <dimen name="_22sp">22sp</dimen>
 </resources>

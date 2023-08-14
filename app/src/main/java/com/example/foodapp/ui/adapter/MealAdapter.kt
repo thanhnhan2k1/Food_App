@@ -13,8 +13,7 @@ import com.squareup.picasso.Picasso
 class MealAdapter : RecyclerView.Adapter<MealAdapter.MealViewHolder>() {
     private val listMeals = mutableListOf<MealModel>()
 
-    var onItemClick: ((Int, MealModel) -> Unit) = { _, _ ->
-    }
+    var onItemClick: ((Int, MealModel) -> Unit)? = null
 
 
     fun setData(list: List<MealModel>){
@@ -66,6 +65,6 @@ class MealAdapter : RecyclerView.Adapter<MealAdapter.MealViewHolder>() {
     override fun getItemCount(): Int = listMeals.size
 
     override fun onBindViewHolder(holder: MealViewHolder, position: Int) {
-        holder.bind(listMeals[position], onItemClick)
+        onItemClick?.let { holder.bind(listMeals[position], it) }
     }
 }
