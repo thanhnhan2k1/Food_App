@@ -3,14 +3,14 @@ package com.example.foodapp.ui.factory
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 
-class ViewModelFactory : ViewModelProvider.NewInstanceFactory() {
+class ViewModelFactory(private vararg val params: Any) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-//        if(modelClass.isAssignableFrom(IngredientViewModel::class.java)){
-//            return IngredientViewModel(meal = MealModel()) as T
-//        }
-//        if(modelClass.isAssignableFrom(MealViewModel::class.java)){
-//            return MealViewModel(database = ) as T
-//        }
-        throw IllegalArgumentException("Unknown ViewModel class")
+        try {
+            val constructor = modelClass.getDeclaredConstructor(*params.map { it::class.java }.toTypedArray())
+            return constructor.newInstance(*params) as T
+        } catch (e: Exception) {
+            throw RuntimeException("Failed to create ViewModel instance", e)
+        }
     }
+
 }

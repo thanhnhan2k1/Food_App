@@ -9,14 +9,15 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.example.foodapp.data.room.FoodDatabase
+import com.example.foodapp.data.FoodRepository
 import com.example.foodapp.ui.adapter.MealAdapter
 import com.example.foodapp.databinding.FragmentSearchBinding
 import com.example.foodapp.ui.meal.MealViewModel
-import com.example.foodapp.ui.meal.MealViewModelFactory
+import com.example.foodapp.ui.MealViewModelFactory
 
 class SearchFragment : Fragment() {
-    private lateinit var viewModel: MealViewModel
+    private lateinit var searchViewModel: SearchViewModel
+    private lateinit var mealViewModel: MealViewModel
     private val adapter by lazy {
         MealAdapter()
     }
@@ -33,11 +34,11 @@ class SearchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val application = requireNotNull(this.activity).application
-        val dataSource = FoodDatabase.getDatabase(application).mealDAO()
-        val viewModelFactory = MealViewModelFactory(dataSource)
-
-        viewModel = ViewModelProvider(this, viewModelFactory)[MealViewModel::class.java]
+        context?.let {
+            val viewModelFactory = MealViewModelFactory(FoodRepository(it))
+            searchViewModel = ViewModelProvider(this, viewModelFactory)[SearchViewModel::class.java]
+            mealViewModel = ViewModelProvider(this, viewModelFactory)[MealViewModel::class.java]
+        }
 
         binding.rvListMeals.adapter = adapter
         initObserver()
@@ -51,8 +52,8 @@ class SearchFragment : Fragment() {
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (!newText.isNullOrEmpty()) {
                     when(newText.length){
-                        1 -> viewModel.getListMealsByFirstLetter(newText)
-                        else -> viewModel.getMealByName(newText)
+                        1 -> searchViewModel.getListMealsByFirstLetter(newText)
+                        else -> searchViewModel.getMealByName(newText)
                     }
                 } else {
                     adapter.setData(emptyList())
@@ -64,7 +65,7 @@ class SearchFragment : Fragment() {
     }
 
     private fun initObserver() {
-        viewModel.listFilterMeals.observe(viewLifecycleOwner) {
+        searchViewModel.listFilterMeals.observe(viewLifecycleOwner) {
             it?.let { it1 ->
                 adapter.setData(it1)
                 adapter.onItemClick = { type, meal ->
@@ -76,8 +77,8 @@ class SearchFragment : Fragment() {
                                 )
                             findNavController().navigate(action)
                         }
-                        1 -> viewModel.insertMeal(meal)
-                        2 -> viewModel.deleteMeal(meal)
+                        1 -> mealViewModel.insertMeal(meal)
+                        2 -> mealViewModel.deleteMeal(meal)
                     }
                 }
                 if (it.isEmpty()) Toast.makeText(context, "No result found!", Toast.LENGTH_SHORT)

@@ -12,9 +12,9 @@ import androidx.navigation.fragment.navArgs
 import com.example.foodapp.R
 import com.example.foodapp.ui.adapter.IngredientAdapter
 import com.example.foodapp.databinding.FragmentDetailBinding
-import com.example.foodapp.model.Constant
+import com.example.foodapp.data.FoodRepository
 import com.example.foodapp.ui.meal.MealViewModel
-import com.example.foodapp.ui.meal.MealViewModelFactory
+import com.example.foodapp.ui.MealViewModelFactory
 import com.squareup.picasso.Picasso
 
 class DetailFragment : Fragment() {
@@ -43,7 +43,7 @@ class DetailFragment : Fragment() {
         binding.rvListIngredients.adapter = adapter
 
         context?.let {
-            val mealViewModelFactory = MealViewModelFactory(Constant.getDatasource(it))
+            val mealViewModelFactory = MealViewModelFactory(FoodRepository(it))
             val mealViewModel = ViewModelProvider(this, mealViewModelFactory)[MealViewModel::class.java]
 
             val ingredientViewModelFactory = IngredientViewModelFactory(meal)
@@ -61,7 +61,7 @@ class DetailFragment : Fragment() {
                 binding.tvRemoveToMyList.visibility = View.INVISIBLE
             }
 
-            ingredientViewModel.toListIngredient()
+            ingredientViewModel.setListIngredient()
 
             ingredientViewModel.listIngredient.observe(viewLifecycleOwner){ list ->
                 adapter.setData(list)

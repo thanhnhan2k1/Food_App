@@ -1,4 +1,4 @@
-package com.example.foodapp.model
+package com.example.foodapp.data.model
 
 import android.os.Parcelable
 import androidx.room.Entity
@@ -53,5 +53,6 @@ data class MealModel(
     val strMeasure20: String?,
     val strMealThumb: String?,
     val strInstructions: String?,
+    val strCategory: String?,
     var isLike: Boolean = false
 ) : Parcelable

@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/white"
     android:layout_marginTop="20dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <com.google.android.material.imageview.ShapeableImageView
@@ -41,7 +42,7 @@
         android:src="@drawable/like_icon"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="RedundantDescriptionCheck" />
+        tools:ignore="RedundantDescriptionCheck,ImageContrastCheck" />
     <ImageButton
         android:id="@+id/btnUnLike"
         android:layout_width="wrap_content"
@@ -56,32 +57,33 @@
         android:layout_marginHorizontal="@dimen/img_heart_margin_horizontal"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
+
     <androidx.appcompat.widget.AppCompatTextView
-        android:layout_width="@dimen/width_layout"
-        android:layout_marginTop="@dimen/tv_time_margin_top"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/tvMealName"
-        app:layout_constraintLeft_toRightOf="@id/img"
         android:id="@+id/tvTime"
+        android:layout_width="@dimen/width_layout"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/tv_time_margin_horizontal"
+        android:layout_marginTop="@dimen/tv_time_margin_top"
         android:drawableStart="@drawable/clock_icon"
         android:drawablePadding="@dimen/drawable_padding"
         android:text="@string/time"
-        android:layout_marginHorizontal="@dimen/tv_time_margin_horizontal"
-        android:textColor="@color/preto_40"/>
+        android:textColor="@color/gray"
+        app:layout_constraintLeft_toRightOf="@id/img"
+        app:layout_constraintTop_toBottomOf="@id/tvMealName" />
 
     <TextView
         android:id="@+id/tvDescription"
         android:layout_width="@dimen/width_layout"
-        android:layout_marginTop="@dimen/tv_description_margin_top"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/tv_description_margin_horizontal"
+        android:layout_marginTop="@dimen/tv_description_margin_top"
+        android:lines="4"
+        android:scrollbars="vertical"
         android:text="@string/description"
-        app:layout_constraintTop_toBottomOf="@id/tvTime"
+        android:textColor="@color/gray"
         app:layout_constraintLeft_toRightOf="@id/img"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginHorizontal="@dimen/tv_description_margin_horizontal"
-        android:textColor="@color/preto_40"
-        android:layout_marginBottom="@dimen/tv_description_margin_bottom"
-        android:scrollbars="vertical"
-        android:lines="3"/>
+        app:layout_constraintTop_toBottomOf="@id/tvTime"
+        tools:ignore="VisualLintLongText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

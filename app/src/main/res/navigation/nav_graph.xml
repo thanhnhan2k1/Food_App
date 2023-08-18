@@ -49,7 +49,7 @@
             app:destination="@+id/fragment_search"/>
         <argument
             android:name="meal"
-            app:argType="com.example.foodapp.model.MealModel" />
+            app:argType="com.example.foodapp.data.model.MealModel" />
     </fragment>
     <fragment
         android:id="@+id/fragment_search"

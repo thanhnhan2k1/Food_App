@@ -13,8 +13,10 @@ import androidx.navigation.fragment.findNavController
 import com.example.foodapp.R
 import com.example.foodapp.ui.adapter.MealAdapter
 import com.example.foodapp.databinding.FragmentListMealsBinding
-import com.example.foodapp.model.Constant
-import com.example.foodapp.model.MealModel
+import com.example.foodapp.data.model.Constant
+import com.example.foodapp.data.model.MealModel
+import com.example.foodapp.data.FoodRepository
+import com.example.foodapp.ui.MealViewModelFactory
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.squareup.picasso.Picasso
 import java.text.SimpleDateFormat
@@ -42,11 +44,11 @@ class ListMealsFragment : Fragment() {
         val adapter = MealAdapter()
 
         context?.let {
-            val viewModelFactory = MealViewModelFactory(constants.getDatasource(it))
+            val viewModelFactory = MealViewModelFactory(FoodRepository(it))
             val viewModel = ViewModelProvider(this, viewModelFactory)[MealViewModel::class.java]
-            viewModel.listCategories.observe(viewLifecycleOwner){
-                viewModel.getAllMeals()
-            }
+//            viewModel.listCategories.observe(viewLifecycleOwner){
+//                viewModel.getAllMeals()
+//            }
             viewModel.list10Meals.observe(viewLifecycleOwner) { list ->
                 when (list.isNullOrEmpty()) {
                     true -> {

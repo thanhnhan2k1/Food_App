@@ -7,21 +7,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.coroutineScope
 import androidx.navigation.fragment.findNavController
-import com.example.foodapp.data.room.FoodDatabase
 import com.example.foodapp.R
 import com.example.foodapp.ui.adapter.MealAdapter
 import com.example.foodapp.databinding.FragmentSavedBinding
-import com.example.foodapp.model.MealModel
+import com.example.foodapp.data.model.MealModel
+import com.example.foodapp.data.FoodRepository
 import com.example.foodapp.ui.meal.MealViewModel
-import com.example.foodapp.ui.meal.MealViewModelFactory
+import com.example.foodapp.ui.MealViewModelFactory
 import com.facebook.shimmer.ShimmerFrameLayout
-import kotlinx.coroutines.launch
 
 class SavedFragment : Fragment() {
     private lateinit var shimmerFrameLayout: ShimmerFrameLayout
     private lateinit var binding: FragmentSavedBinding
+    private lateinit var mealViewModel: MealViewModel
+    private lateinit var savedViewModel: SavedViewModel
+    private lateinit var adapter: MealAdapter
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -33,38 +34,17 @@ class SavedFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val application = requireNotNull(this.activity).application
-        val dataSource = FoodDatabase.getDatabase(application).mealDAO()
-        val viewModelFactory = MealViewModelFactory(dataSource)
-        val viewModel = ViewModelProvider(this, viewModelFactory)[MealViewModel::class.java]
-
-        val adapter = MealAdapter()
+        context?.let {
+            val viewModelFactory = MealViewModelFactory(FoodRepository(it))
+            mealViewModel = ViewModelProvider(this, viewModelFactory)[MealViewModel::class.java]
+            savedViewModel = ViewModelProvider(this, viewModelFactory)[SavedViewModel::class.java]
+        }
+        adapter = MealAdapter()
         shimmerFrameLayout = binding.shimmerViewContainer
         binding.rvListMeals.adapter = adapter
-        lifecycle.coroutineScope.launch {
-            viewModel.getListFavoriteMeals().collect {
-                if (it.isEmpty()) {
-                    adapter.setData(emptyList())
-                    shimmerFrameLayout.stopShimmerAnimation()
-                    shimmerFrameLayout.visibility = View.GONE
-                    Toast.makeText(context, "No data found!", Toast.LENGTH_SHORT).show()
-                }
-                else{
-                    adapter.setData(it)
-                    adapter.onItemClick = { type, meal ->
-                        when (type) {
-                            0 -> {
-                                navigateToFragmentDetail(meal)
-                            }
-                            1 -> viewModel.insertMeal(meal)
-                            2 -> viewModel.deleteMeal(meal)
-                        }
-                    }
-                    shimmerFrameLayout.stopShimmerAnimation()
-                    shimmerFrameLayout.visibility = View.GONE
-                }
-            }
-        }
+
+        savedViewModel.getListFavoriteMeals()
+        initObserver()
 
         binding.search.setOnClickListener {
             findNavController().navigate(R.id.action_fragment_saved_to_fragment_search)
@@ -88,5 +68,29 @@ class SavedFragment : Fragment() {
             )
         }
         action?.let { it1 -> findNavController().navigate(it1) }
+    }
+
+    private fun initObserver(){
+        savedViewModel.listFavoriteMeals.observe(viewLifecycleOwner) { list ->
+            if (list.isNullOrEmpty()) {
+                adapter.setData(emptyList())
+                shimmerFrameLayout.stopShimmerAnimation()
+                shimmerFrameLayout.visibility = View.GONE
+                Toast.makeText(context, "No data found!", Toast.LENGTH_SHORT).show()
+            } else {
+                adapter.setData(list)
+                adapter.onItemClick = { type, meal ->
+                    when (type) {
+                        0 -> {
+                            navigateToFragmentDetail(meal)
+                        }
+                        1 -> mealViewModel.insertMeal(meal)
+                        2 -> mealViewModel.deleteMeal(meal)
+                    }
+                }
+                shimmerFrameLayout.stopShimmerAnimation()
+                shimmerFrameLayout.visibility = View.GONE
+            }
+        }
     }
 }

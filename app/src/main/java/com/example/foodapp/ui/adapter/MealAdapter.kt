@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodapp.databinding.MealItemBinding
-import com.example.foodapp.model.Constant
-import com.example.foodapp.model.MealModel
+import com.example.foodapp.data.model.Constant
+import com.example.foodapp.data.model.MealModel
 import com.squareup.picasso.Picasso
 
 class MealAdapter : RecyclerView.Adapter<MealAdapter.MealViewHolder>() {

@@ -4,11 +4,13 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.foodapp.model.MealModel
+import com.example.foodapp.data.model.CategoryModel
+import com.example.foodapp.data.model.MealModel
 
-@Database(entities = [MealModel::class], version = 1, exportSchema = false)
+@Database(entities = [MealModel::class, CategoryModel::class], version = 2, exportSchema = false)
 abstract class FoodDatabase : RoomDatabase() {
     abstract fun mealDAO(): MealDAO
+    abstract fun categoryDAO(): CategoryDAO
     companion object{
         @Volatile
         private var INSTANCE: FoodDatabase? = null
