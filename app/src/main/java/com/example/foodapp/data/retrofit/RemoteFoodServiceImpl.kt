@@ -1,21 +1,20 @@
 package com.example.foodapp.data.retrofit
 
 
+import com.example.foodapp.data.model.Constant
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-const val BASE_URL = "https://www.themealdb.com/api/json/v1/1/"
-object RetrofitBuilder {
-
-    fun getApiInterface(): ApiInterface {
+object RemoteFoodServiceImpl {
+    fun getRemoteFoodService(): RemoteFoodService {
 
         return Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(BASE_URL)
+            .baseUrl(Constant.BASE_URL)
 //            .client(OkHttpClient())
             .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .build()
-            .create(ApiInterface::class.java)
+            .create(RemoteFoodService::class.java)
     }
 }

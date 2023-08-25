@@ -10,6 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.foodapp.data.FoodRepository
+import com.example.foodapp.data.retrofit.RemoteFoodServiceImpl
+import com.example.foodapp.data.room.FoodDatabase
 import com.example.foodapp.ui.adapter.MealAdapter
 import com.example.foodapp.databinding.FragmentSearchBinding
 import com.example.foodapp.ui.meal.MealViewModel
@@ -35,7 +37,9 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         context?.let {
-            val viewModelFactory = MealViewModelFactory(FoodRepository(it))
+            val remoteService = RemoteFoodServiceImpl.getRemoteFoodService()
+            val db = FoodDatabase.getDatabase(it)
+            val viewModelFactory = MealViewModelFactory(FoodRepository(remoteService, db.mealDAO(), db.categoryDAO()))
             searchViewModel = ViewModelProvider(this, viewModelFactory)[SearchViewModel::class.java]
             mealViewModel = ViewModelProvider(this, viewModelFactory)[MealViewModel::class.java]
         }

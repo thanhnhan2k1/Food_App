@@ -13,6 +13,8 @@ import com.example.foodapp.R
 import com.example.foodapp.ui.adapter.IngredientAdapter
 import com.example.foodapp.databinding.FragmentDetailBinding
 import com.example.foodapp.data.FoodRepository
+import com.example.foodapp.data.retrofit.RemoteFoodServiceImpl
+import com.example.foodapp.data.room.FoodDatabase
 import com.example.foodapp.ui.meal.MealViewModel
 import com.example.foodapp.ui.MealViewModelFactory
 import com.squareup.picasso.Picasso
@@ -35,18 +37,15 @@ class DetailFragment : Fragment() {
         val meal = args.meal
         val adapter = IngredientAdapter()
 
-
-        Picasso.get().load(meal.strMealThumb?.toUri()).into(binding.imgMeal)
-        binding.tvMealName.text = meal.strMeal
-        binding.tvMake.text = meal.strInstructions
-
         binding.rvListIngredients.adapter = adapter
 
         context?.let {
-            val mealViewModelFactory = MealViewModelFactory(FoodRepository(it))
+            val remoteService = RemoteFoodServiceImpl.getRemoteFoodService()
+            val db = FoodDatabase.getDatabase(it)
+            val mealViewModelFactory = MealViewModelFactory(FoodRepository(remoteService, db.mealDAO(), db.categoryDAO()))
             val mealViewModel = ViewModelProvider(this, mealViewModelFactory)[MealViewModel::class.java]
 
-            val ingredientViewModelFactory = IngredientViewModelFactory(meal)
+            val ingredientViewModelFactory = IngredientViewModelFactory()
             val ingredientViewModel = ViewModelProvider(this, ingredientViewModelFactory)[IngredientViewModel::class.java]
 
             binding.tvAddToMyList.setOnClickListener {
@@ -60,8 +59,14 @@ class DetailFragment : Fragment() {
                 binding.tvAddToMyList.visibility = View.VISIBLE
                 binding.tvRemoveToMyList.visibility = View.INVISIBLE
             }
+            ingredientViewModel.setMeal(meal)
+            ingredientViewModel.meal.observe(viewLifecycleOwner){
+                ingredientViewModel.setListIngredient()
+                Picasso.get().load(it.strMealThumb?.toUri()).into(binding.imgMeal)
+                binding.tvMealName.text = it.strMeal
+                binding.tvMake.text = it.strInstructions
+            }
 
-            ingredientViewModel.setListIngredient()
 
             ingredientViewModel.listIngredient.observe(viewLifecycleOwner){ list ->
                 adapter.setData(list)

@@ -1,4 +1,4 @@
-package com.example.foodapp.data.entity
+package com.example.foodapp.data.entities
 
 
 import kotlinx.serialization.SerialName

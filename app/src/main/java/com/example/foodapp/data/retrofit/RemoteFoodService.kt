@@ -1,12 +1,11 @@
 package com.example.foodapp.data.retrofit
 
-import com.example.foodapp.data.entity.Categories
-import com.example.foodapp.data.entity.Meals
+import com.example.foodapp.data.entities.Categories
+import com.example.foodapp.data.entities.Meals
 import retrofit2.http.GET
-import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface ApiInterface {
+interface RemoteFoodService {
     @GET("search.php")
     suspend fun getAllMealsByFirstLetter(@Query("f") f: String): Meals
 

@@ -16,6 +16,8 @@ import com.example.foodapp.databinding.FragmentListMealsBinding
 import com.example.foodapp.data.model.Constant
 import com.example.foodapp.data.model.MealModel
 import com.example.foodapp.data.FoodRepository
+import com.example.foodapp.data.retrofit.RemoteFoodServiceImpl
+import com.example.foodapp.data.room.FoodDatabase
 import com.example.foodapp.ui.MealViewModelFactory
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.squareup.picasso.Picasso
@@ -44,7 +46,9 @@ class ListMealsFragment : Fragment() {
         val adapter = MealAdapter()
 
         context?.let {
-            val viewModelFactory = MealViewModelFactory(FoodRepository(it))
+            val remoteService = RemoteFoodServiceImpl.getRemoteFoodService()
+            val db = FoodDatabase.getDatabase(it)
+            val viewModelFactory = MealViewModelFactory(FoodRepository(remoteService, db.mealDAO(), db.categoryDAO()))
             val viewModel = ViewModelProvider(this, viewModelFactory)[MealViewModel::class.java]
 //            viewModel.listCategories.observe(viewLifecycleOwner){
 //                viewModel.getAllMeals()

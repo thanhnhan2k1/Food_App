@@ -11,6 +11,7 @@ import com.example.foodapp.data.model.MealModel
 abstract class FoodDatabase : RoomDatabase() {
     abstract fun mealDAO(): MealDAO
     abstract fun categoryDAO(): CategoryDAO
+
     companion object{
         @Volatile
         private var INSTANCE: FoodDatabase? = null

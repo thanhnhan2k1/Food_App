@@ -1,6 +1,6 @@
 package com.example.foodapp.data.model
 
-import com.example.foodapp.data.entity.*
+import com.example.foodapp.data.entities.*
 
 object Mapper {
     fun Categories.toCategoriesModel(): CategoriesModel {

@@ -13,6 +13,8 @@ import com.example.foodapp.ui.adapter.MealAdapter
 import com.example.foodapp.databinding.FragmentSavedBinding
 import com.example.foodapp.data.model.MealModel
 import com.example.foodapp.data.FoodRepository
+import com.example.foodapp.data.retrofit.RemoteFoodServiceImpl
+import com.example.foodapp.data.room.FoodDatabase
 import com.example.foodapp.ui.meal.MealViewModel
 import com.example.foodapp.ui.MealViewModelFactory
 import com.facebook.shimmer.ShimmerFrameLayout
@@ -35,7 +37,9 @@ class SavedFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         context?.let {
-            val viewModelFactory = MealViewModelFactory(FoodRepository(it))
+            val remoteService = RemoteFoodServiceImpl.getRemoteFoodService()
+            val db = FoodDatabase.getDatabase(it)
+            val viewModelFactory = MealViewModelFactory(FoodRepository(remoteService, db.mealDAO(), db.categoryDAO()))
             mealViewModel = ViewModelProvider(this, viewModelFactory)[MealViewModel::class.java]
             savedViewModel = ViewModelProvider(this, viewModelFactory)[SavedViewModel::class.java]
         }
