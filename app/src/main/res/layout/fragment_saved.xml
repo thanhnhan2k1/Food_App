@@ -85,5 +85,15 @@
             app:layout_constraintBottom_toBottomOf="parent"
             tools:itemCount="5"
             tools:listitem="@layout/meal_item" />
+        <com.airbnb.lottie.LottieAnimationView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/noDataAnim"
+            app:lottie_autoPlay="true"
+            app:lottie_rawRes="@raw/no_data_animation"
+            app:lottie_loop="true"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/tvTitle"
+            app:layout_constraintBottom_toBottomOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

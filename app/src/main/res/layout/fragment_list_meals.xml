@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swiperRefresh"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/swiperRefresh"
     tools:context=".ui.meal.ListMealsFragment">
 
     <androidx.core.widget.NestedScrollView
@@ -86,16 +85,17 @@
                 android:id="@+id/imgMeal"
                 android:layout_width="@dimen/width_layout"
                 android:layout_height="@dimen/img_height"
+                app:strokeColor="@null"
                 android:layout_marginHorizontal="@dimen/margin_horizontal"
                 android:layout_marginTop="@dimen/margin_top"
                 android:background="@drawable/image_corner"
                 android:contentDescription="@string/image_meal"
-                android:src="@drawable/img"
                 android:scaleType="fitXY"
-                app:shapeAppearanceOverlay="@style/image_corner"
+                android:src="@drawable/img"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvDate" />
+                app:layout_constraintTop_toBottomOf="@id/tvDate"
+                app:shapeAppearanceOverlay="@style/image_corner" />
 
             <TextView
                 android:id="@+id/tvMealName"
@@ -210,6 +210,16 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/rvListRecentMeals" />
+            <com.airbnb.lottie.LottieAnimationView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/noDataAnim"
+                app:lottie_autoPlay="true"
+                app:lottie_rawRes="@raw/no_data_animation"
+                app:lottie_loop="true"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/tvRecentMeals"
+                />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 

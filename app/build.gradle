@@ -9,11 +9,11 @@ plugins {
 }
 
 android {
-    namespace 'com.example.foodapp'
+    namespace 'com.example.foodappbeta'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.foodapp"
+        applicationId "com.example.foodappbeta"
         minSdk 24
         targetSdk 33
         versionCode 1
@@ -53,6 +53,10 @@ dependencies {
 
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
+
+    // Lottie dependency
+    def lottieVersion = "3.4.0"
+    implementation "com.airbnb.android:lottie:$lottieVersion"
 
     // Jetpack Compose Integration
     implementation("androidx.navigation:navigation-compose:2.6.0")

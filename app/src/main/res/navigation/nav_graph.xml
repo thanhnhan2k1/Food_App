@@ -6,7 +6,7 @@
     app:startDestination="@id/fragment_home">
     <fragment
         android:id="@+id/fragment_home"
-        android:name="com.example.foodapp.ui.meal.ListMealsFragment"
+        android:name="com.example.foodappbeta.ui.meal.ListMealsFragment"
         tools:layout="@layout/fragment_list_meals">
 
         <action
@@ -22,7 +22,7 @@
     </fragment>
     <fragment
         android:id="@+id/fragment_saved"
-        android:name="com.example.foodapp.ui.saved.SavedFragment"
+        android:name="com.example.foodappbeta.ui.saved.SavedFragment"
         tools:layout="@layout/fragment_saved">
         <action
             android:id="@+id/action_fragment_saved_to_fragment_profile"
@@ -36,24 +36,24 @@
     </fragment>
     <fragment
         android:id="@+id/fragment_profile"
-        android:name="com.example.foodapp.ui.profile.ProfileFragment"
+        android:name="com.example.foodappbeta.ui.profile.ProfileFragment"
         tools:layout="@layout/fragment_profile">
 
     </fragment>
     <fragment
         android:id="@+id/fragment_detail"
-        android:name="com.example.foodapp.ui.detail.DetailFragment"
+        android:name="com.example.foodappbeta.ui.detail.DetailFragment"
         tools:layout="@layout/fragment_detail">
         <action
             android:id="@+id/action_fragment_detail_to_fragment_search"
             app:destination="@+id/fragment_search"/>
         <argument
-            android:name="meal"
-            app:argType="com.example.foodapp.data.model.MealModel" />
+            android:name="idMeal"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/fragment_search"
-        android:name="com.example.foodapp.ui.search.SearchFragment"
+        android:name="com.example.foodappbeta.ui.search.SearchFragment"
         tools:layout="@layout/fragment_search" >
         <action android:id="@+id/action_fragment_search_to_fragment_detail"
             app:destination="@id/fragment_detail"/>
