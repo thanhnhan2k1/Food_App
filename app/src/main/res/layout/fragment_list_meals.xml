@@ -91,18 +91,26 @@
                 android:background="@drawable/image_corner"
                 android:contentDescription="@string/image_meal"
                 android:scaleType="fitXY"
-                android:src="@drawable/img"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvDate"
                 app:shapeAppearanceOverlay="@style/image_corner" />
-
+            <com.airbnb.lottie.LottieAnimationView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/animLoadImg"
+                app:lottie_autoPlay="true"
+                app:lottie_rawRes="@raw/animation_load_image"
+                app:lottie_loop="true"
+                app:layout_constraintTop_toTopOf="@id/imgMeal"
+                app:layout_constraintBottom_toBottomOf="@id/imgMeal"
+                app:layout_constraintStart_toStartOf="@id/imgMeal"
+                app:layout_constraintEnd_toEndOf="@id/imgMeal"/>
             <TextView
                 android:id="@+id/tvMealName"
                 android:layout_width="@dimen/width_layout"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/margin_horizontal"
-                android:text="@string/eggs_benedict"
                 android:textColor="@color/white"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@id/imgMeal"
@@ -117,7 +125,6 @@
                 android:layout_marginHorizontal="@dimen/margin_horizontal"
                 android:drawableStart="@drawable/clock_icon"
                 android:drawablePadding="@dimen/drawable_padding"
-                android:text="@string/time"
                 android:textColor="@color/white"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@id/imgMeal"

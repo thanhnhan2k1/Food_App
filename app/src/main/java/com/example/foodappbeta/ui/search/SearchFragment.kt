@@ -12,10 +12,10 @@ import androidx.navigation.fragment.findNavController
 import com.example.foodappbeta.data.FoodRepository
 import com.example.foodappbeta.data.retrofit.RemoteFoodServiceImpl
 import com.example.foodappbeta.data.room.FoodDatabase
-import com.example.foodappbeta.ui.adapter.MealAdapter
 import com.example.foodappbeta.databinding.FragmentSearchBinding
-import com.example.foodappbeta.ui.meal.MealViewModel
 import com.example.foodappbeta.ui.MealViewModelFactory
+import com.example.foodappbeta.ui.adapter.MealAdapter
+import com.example.foodappbeta.ui.meal.MealViewModel
 
 class SearchFragment : Fragment() {
     private lateinit var searchViewModel: SearchViewModel
@@ -36,36 +36,22 @@ class SearchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        context?.let {
-            val remoteService = RemoteFoodServiceImpl.getRemoteFoodService()
-            val db = FoodDatabase.getDatabase(it)
-            val viewModelFactory = MealViewModelFactory(FoodRepository(remoteService, db.mealDAO(), db.categoryDAO()))
-            searchViewModel = ViewModelProvider(this, viewModelFactory)[SearchViewModel::class.java]
-            mealViewModel = ViewModelProvider(this, viewModelFactory)[MealViewModel::class.java]
-        }
 
-        binding.rvListMeals.adapter = adapter
+        val remoteService = RemoteFoodServiceImpl.getRemoteFoodService()
+        val db = FoodDatabase.getDatabase(requireContext())
+        val viewModelFactory =
+            MealViewModelFactory(FoodRepository(remoteService, db.mealDAO(), db.categoryDAO()))
+        searchViewModel = ViewModelProvider(this, viewModelFactory)[SearchViewModel::class.java]
+        mealViewModel = ViewModelProvider(this, viewModelFactory)[MealViewModel::class.java]
+
+        initView()
         initObserver()
+        initAction()
 
-        binding.searchView.setOnQueryTextListener(object :
-            SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                return false
-            }
+    }
 
-            override fun onQueryTextChange(newText: String?): Boolean {
-                if (!newText.isNullOrEmpty()) {
-                    when(newText.length){
-                        1 -> searchViewModel.getListMealsByFirstLetter(newText)
-                        else -> searchViewModel.getMealByName(newText)
-                    }
-                } else {
-                    adapter.setData(emptyList())
-                }
-                return false
-            }
-
-        })
+    private fun initView(){
+        binding.rvListMeals.adapter = adapter
     }
 
     private fun initObserver() {
@@ -89,6 +75,28 @@ class SearchFragment : Fragment() {
                     .show()
             }
         }
+    }
+
+    private fun initAction(){
+        binding.searchView.setOnQueryTextListener(object :
+            SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if (!newText.isNullOrEmpty()) {
+                    when (newText.length) {
+                        1 -> searchViewModel.getListMealsByFirstLetter(newText)
+                        else -> searchViewModel.getMealByName(newText)
+                    }
+                } else {
+                    adapter.setData(emptyList())
+                }
+                return false
+            }
+
+        })
     }
 
 }

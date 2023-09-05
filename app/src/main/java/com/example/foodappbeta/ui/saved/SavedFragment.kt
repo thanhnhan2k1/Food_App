@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.airbnb.lottie.LottieAnimationView
 import com.example.foodappbeta.R
 import com.example.foodappbeta.data.FoodRepository
 import com.example.foodappbeta.data.retrofit.RemoteFoodServiceImpl
@@ -16,11 +15,8 @@ import com.example.foodappbeta.databinding.FragmentSavedBinding
 import com.example.foodappbeta.ui.MealViewModelFactory
 import com.example.foodappbeta.ui.adapter.MealAdapter
 import com.example.foodappbeta.ui.meal.MealViewModel
-import com.facebook.shimmer.ShimmerFrameLayout
 
 class SavedFragment : Fragment() {
-    private lateinit var shimmerFrameLayout: ShimmerFrameLayout
-    private lateinit var animation: LottieAnimationView
     private lateinit var binding: FragmentSavedBinding
     private lateinit var mealViewModel: MealViewModel
     private lateinit var savedViewModel: SavedViewModel
@@ -36,17 +32,15 @@ class SavedFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        context?.let {
-            val remoteService = RemoteFoodServiceImpl.getRemoteFoodService()
-            val db = FoodDatabase.getDatabase(it)
-            val viewModelFactory =
-                MealViewModelFactory(FoodRepository(remoteService, db.mealDAO(), db.categoryDAO()))
-            mealViewModel = ViewModelProvider(this, viewModelFactory)[MealViewModel::class.java]
-            savedViewModel = ViewModelProvider(this, viewModelFactory)[SavedViewModel::class.java]
-        }
+
+        val remoteService = RemoteFoodServiceImpl.getRemoteFoodService()
+        val db = FoodDatabase.getDatabase(requireContext())
+        val viewModelFactory =
+            MealViewModelFactory(FoodRepository(remoteService, db.mealDAO(), db.categoryDAO()))
+        mealViewModel = ViewModelProvider(this, viewModelFactory)[MealViewModel::class.java]
+        savedViewModel = ViewModelProvider(this, viewModelFactory)[SavedViewModel::class.java]
+
         adapter = MealAdapter()
-        shimmerFrameLayout = binding.shimmerViewContainer
-        animation = binding.noDataAnim
         binding.rvListMeals.adapter = adapter
 
         savedViewModel.getListFavoriteMeals()
@@ -58,28 +52,29 @@ class SavedFragment : Fragment() {
     }
 
     override fun onPause() {
-        shimmerFrameLayout.stopShimmerAnimation()
+        binding.shimmerViewContainer.stopShimmerAnimation()
         super.onPause()
     }
 
     override fun onResume() {
         super.onResume()
-        shimmerFrameLayout.startShimmerAnimation()
+        binding.shimmerViewContainer.startShimmerAnimation()
     }
 
     private fun navigateToFragmentDetail(idMeal: String) {
         val action = SavedFragmentDirections.actionFragmentSavedToFragmentDetail(idMeal)
         findNavController().navigate(action)
     }
+
     private fun initObserver() {
         savedViewModel.listFavoriteMeals.observe(viewLifecycleOwner) { list ->
             if (list.isNullOrEmpty()) {
                 adapter.setData(emptyList())
-                shimmerFrameLayout.stopShimmerAnimation()
-                shimmerFrameLayout.visibility = View.GONE
-                animation.visibility = View.VISIBLE
+                binding.shimmerViewContainer.stopShimmerAnimation()
+                binding.shimmerViewContainer.visibility = View.GONE
+                binding.noDataAnim.visibility = View.VISIBLE
             } else {
-                animation.visibility = View.INVISIBLE
+                binding.noDataAnim.visibility = View.INVISIBLE
                 adapter.setData(list)
                 adapter.onItemClick = { type, meal ->
                     when (type) {
@@ -92,8 +87,8 @@ class SavedFragment : Fragment() {
                         }
                     }
                 }
-                shimmerFrameLayout.stopShimmerAnimation()
-                shimmerFrameLayout.visibility = View.GONE
+                binding.shimmerViewContainer.stopShimmerAnimation()
+                binding.shimmerViewContainer.visibility = View.GONE
             }
         }
     }

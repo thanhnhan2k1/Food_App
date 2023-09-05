@@ -40,7 +40,7 @@ class FoodRepository(
     fun fetchRandomMeal(): Flow<Meals> = flow {
         emit(remote.getRandomMeal())
     }.catch {
-        Log.d("API", "Get random meal fail!")
+        Log.d("API", "Get random mealRandom fail!")
     }
 
     fun fetchMealByName(name: String): Flow<Meals> = flow {
@@ -58,7 +58,7 @@ class FoodRepository(
     fun fetchMealById(id: String): Flow<Meals> = flow {
         emit(remote.getMealDetailsById(id))
     }.catch {
-        Log.d("API", "Get meal by id fail!")
+        Log.d("API", "Get mealRandom by id fail!")
     }
 
     fun insertMeal(mealModel: MealModel) {

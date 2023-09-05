@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.foodappbeta.data.FoodRepository
-import com.example.foodappbeta.data.model.CategoryModel
 import com.example.foodappbeta.data.model.Mapper.toMealsModel
 import com.example.foodappbeta.data.model.MealModel
 import kotlinx.coroutines.Dispatchers
@@ -17,9 +16,9 @@ class MealViewModel(private val repository: FoodRepository): ViewModel() {
     val list10Meals: LiveData<List<MealModel>?>
         get() = _list10Meals
 
-    private var _meal = MutableLiveData<MealModel>()
-    val meal: LiveData<MealModel>
-        get() = _meal
+    private var _mealRandom = MutableLiveData<MealModel>()
+    val mealRandom: LiveData<MealModel>
+        get() = _mealRandom
 
     private val _mealDetail = MutableLiveData<MealModel>()
     val mealDetail: LiveData<MealModel>
@@ -39,6 +38,11 @@ class MealViewModel(private val repository: FoodRepository): ViewModel() {
     fun reloadListMeals() {
         viewModelScope.launch(Dispatchers.IO) {
             getAllMeals()
+        }
+    }
+    fun reloadMealRandom(){
+        viewModelScope.launch(Dispatchers.IO) {
+            getRandomMeal()
         }
     }
     private suspend fun getAllMealsByCategory(){
@@ -82,12 +86,12 @@ class MealViewModel(private val repository: FoodRepository): ViewModel() {
     }
 
     fun getCurrentMeal(): MealModel? {
-        return _meal.value
+        return _mealRandom.value
     }
 
     private suspend fun getRandomMeal() {
         repository.fetchRandomMeal().collect {
-            _meal.postValue(it.toMealsModel().meals.first())
+            _mealRandom.postValue(it.toMealsModel().meals.first())
         }
     }
 
@@ -111,7 +115,7 @@ class MealViewModel(private val repository: FoodRepository): ViewModel() {
                 repository.getMealFromLocalById(id).collect { meal ->
                     if(meal.idMeal.isNotEmpty()){
                         val m = meals.toMealsModel().meals.first()
-                        m.isLike = true
+                        m.isLike = meal.isLike
                         _mealDetail.postValue(m)
                     }
                     else{
