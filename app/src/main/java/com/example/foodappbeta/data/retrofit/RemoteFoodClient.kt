@@ -6,7 +6,7 @@ import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterF
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-object RemoteFoodServiceImpl {
+object RemoteFoodClient {
     fun getRemoteFoodService(): RemoteFoodService {
 
         return Retrofit.Builder()

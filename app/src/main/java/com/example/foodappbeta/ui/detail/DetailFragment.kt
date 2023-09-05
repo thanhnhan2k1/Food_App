@@ -14,7 +14,7 @@ import com.example.foodappbeta.R
 import com.example.foodappbeta.ui.adapter.IngredientAdapter
 import com.example.foodappbeta.databinding.FragmentDetailBinding
 import com.example.foodappbeta.data.FoodRepository
-import com.example.foodappbeta.data.retrofit.RemoteFoodServiceImpl
+import com.example.foodappbeta.data.retrofit.RemoteFoodClient
 import com.example.foodappbeta.data.room.FoodDatabase
 import com.example.foodappbeta.ui.meal.MealViewModel
 import com.example.foodappbeta.ui.MealViewModelFactory
@@ -39,7 +39,7 @@ class DetailFragment : Fragment() {
         val adapter = IngredientAdapter()
 
         context?.let {
-            val remoteService = RemoteFoodServiceImpl.getRemoteFoodService()
+            val remoteService = RemoteFoodClient.getRemoteFoodService()
             val db = FoodDatabase.getDatabase(it)
             val mealViewModelFactory = MealViewModelFactory(FoodRepository(remoteService, db.mealDAO(), db.categoryDAO()))
             val mealViewModel = ViewModelProvider(this, mealViewModelFactory)[MealViewModel::class.java]

@@ -14,7 +14,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.foodappbeta.R
 import com.example.foodappbeta.data.FoodRepository
 import com.example.foodappbeta.data.model.Constant
-import com.example.foodappbeta.data.retrofit.RemoteFoodServiceImpl
+import com.example.foodappbeta.data.retrofit.RemoteFoodClient
 import com.example.foodappbeta.data.room.FoodDatabase
 import com.example.foodappbeta.databinding.FragmentListMealsBinding
 import com.example.foodappbeta.ui.MealViewModelFactory
@@ -42,7 +42,7 @@ class ListMealsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val remoteService = RemoteFoodServiceImpl.getRemoteFoodService()
+        val remoteService = RemoteFoodClient.getRemoteFoodService()
         val db = FoodDatabase.getDatabase(requireContext())
         val viewModelFactory =
             MealViewModelFactory(FoodRepository(remoteService, db.mealDAO(), db.categoryDAO()))

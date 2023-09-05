@@ -8,7 +8,7 @@ import com.example.foodappbeta.data.model.Constant
 import com.example.foodappbeta.data.model.Mapper.toCategoriesModel
 import com.example.foodappbeta.data.model.MealModel
 import com.example.foodappbeta.data.retrofit.RemoteFoodService
-import com.example.foodappbeta.data.retrofit.RemoteFoodServiceImpl
+import com.example.foodappbeta.data.retrofit.RemoteFoodClient
 import com.example.foodappbeta.data.room.CategoryDAO
 import com.example.foodappbeta.data.room.MealDAO
 import kotlinx.coroutines.flow.Flow
@@ -44,7 +44,7 @@ class FoodRepository(
     }
 
     fun fetchMealByName(name: String): Flow<Meals> = flow {
-        emit(RemoteFoodServiceImpl.getRemoteFoodService().searchMealByName(name))
+        emit(RemoteFoodClient.getRemoteFoodService().searchMealByName(name))
     }.catch {
         Log.d("API", "Get data fail!")
     }
